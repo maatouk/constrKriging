@@ -8,15 +8,34 @@
 #' @param coef.var a value specifying the variance parameter
 #' @param nugget an optimal value used as nugget effect to solve the numerical inverse matrix problem
 #' @import quadrpog
-#' kmConvex1D(design=c(0.2, 0.5, 0.9), response=c(3, -5, 8))
+#' @examples
+#' kmConvex1D(design=c(0.1, 0.5, 0.9), response=c(10, 5, 9))
 kmConvex1D <- function(design, response, 
                        basis.size = dim(design)[1]+2+10, 
                        covtype = "gauss",
-                       coef.cov = 0.5*(max(design)-min(design)),
-                       coef.var = 10*var(response),
+                       coef.cov = "LOO", #0.5*(max(design)-min(design)),
+                       coef.var = var(response),
                        nugget = 1e-8) {
   
   if (!is.matrix(design)) design=matrix(design,ncol=1)
+  
+  if (coef.cov=="LOO") {
+    object=kmConvex1D(design, response, 
+                      basis.size, 
+                      covtype ,
+                      coef.cov = 0.5*(max(design)-min(design)),
+                      coef.var,
+                      nugget)
+    
+    theta=coef.cov_LOO(object)$par
+    
+    return(kmConvex1D(design, response, 
+                      basis.size, 
+                      covtype ,
+                      coef.cov = theta,
+                      coef.var,
+                      nugget))
+  }
   
   n <- nrow(design) # nb de points ? interpoler
   N <- basis.size
@@ -88,27 +107,29 @@ kmConvex1D <- function(design, response,
   
   
   
-  
-  Gamma <- matrix(data = 0, nrow = N+3, ncol = N+3)
-  Gamma[1,1] <- k(0,0, sig, theta)
-  Gamma[1,2] <- kp2(0,0, sig, theta)
-  Gamma[2,1] <- kp1(0,0, sig, theta)
-  Gamma[2,2] <- kpp(0,0, sig, theta)
-  for(j in 3 : (N+3)){
-    Gamma[1,j] <- kpp12(0, u[j-2], sig, theta)
-    Gamma[2,j] <- k3pp2(0,u[j-2], sig, theta)
-  }
-  for(i in 3 : (N+3)){
-    Gamma[i,1] <- kpp12(u[i-2], 0, sig, theta)
-    Gamma[i,2] <- k3pp1(u[i-2],0, sig, theta)
-  }
-  for(i in 3 : (N+3)){
+  fctGamma=function(.theta){
+    Gamma <- matrix(data = 0, nrow = N+3, ncol = N+3)
+    Gamma[1,1] <- k(0,0, sig, .theta)
+    Gamma[1,2] <- kp2(0,0, sig, .theta)
+    Gamma[2,1] <- kp1(0,0, sig, .theta)
+    Gamma[2,2] <- kpp(0,0, sig, .theta)
     for(j in 3 : (N+3)){
-      Gamma[i, j] = k2pp(u[i-2], u[j-2], sig, theta)
+      Gamma[1,j] <- kpp12(0, u[j-2], sig, .theta)
+      Gamma[2,j] <- k3pp2(0,u[j-2], sig, .theta)
     }
+    for(i in 3 : (N+3)){
+      Gamma[i,1] <- kpp12(u[i-2], 0, sig, .theta)
+      Gamma[i,2] <- k3pp1(u[i-2],0, sig, .theta)
+    }
+    for(i in 3 : (N+3)){
+      for(j in 3 : (N+3)){
+        Gamma[i, j] = k2pp(u[i-2], u[j-2], sig, .theta)
+      }
+    }
+    Gamma <- Gamma + nugget * diag(N+3)
+    return(Gamma)
   }
-  Gamma <- Gamma + nugget * diag(N+3)
-  
+  Gamma=fctGamma(theta)
   
   phi0 <- function(x, N){
     ifelse(x <= -delta, -delta*x/2-delta^2/6, ifelse(x >= -delta & x <= 0, 
@@ -152,7 +173,7 @@ kmConvex1D <- function(design, response,
   
   zetoil <- solve.QP(invGamma,dvec=rep(0,ncol(A)),Amat=t(Amat),bvec=c(response,rep(0,ncol(A))),meq=n)$solution
   
-  return(structure(list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,
+  return(structure(list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,fctGamma=fctGamma,
                         call=list(design=design, response=response,basis.size=basis.size,covtype=covtype, coef.cov=coef.cov,coef.var=coef.var, nugget=nugget))
                    , class = 'kmConvex1D'))
   

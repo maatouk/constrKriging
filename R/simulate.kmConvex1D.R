@@ -8,7 +8,7 @@
 #' simulate(object=kmConvex1D(design=c(0.2, 0.5, 0.9), response=c(3, -5, 8)),newdata=seq(f=0,t=1,l=100),nsim=10)
 #' @examples 
 #' design = c(0.1, 0.5, 0.9)
-#' response = c(8, 5, 9)
+#' response = c(10, 5, 9)
 #' model = kmConvex1D(design, response)
 #' graphics::plot(x=seq(0,1,,100),y=simulate_process(object=model, newdata=seq(0,1,,100), nsim=1))
 

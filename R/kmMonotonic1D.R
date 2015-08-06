@@ -9,17 +9,40 @@
 #' @param coef.var a value specifying the variance parameter
 #' @param nugget an optimal value used as nugget effect to solve the numerical inverse matrix problem
 #' @import quadrpog
+#' @examples 
 #' kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9))
-#' kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9), basis.type="C1")
+#' kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9), basis.type="C0")
+#' kmMonotonic1D(design=sort(runif(5)), response=cumsum(runif(5)),nugget=1e-4)
 kmMonotonic1D <- function(design, response, 
                           basis.size = dim(design)[1]+2+10, 
                           covtype = "gauss",
                           basis.type = "C1", 
-                          coef.cov = 0.5*(max(design)-min(design)),
+                          coef.cov = "LOO", #0.5*(max(design)-min(design)),
                           coef.var = var(response),
                           nugget = 1e-8) {
   
   if (!is.matrix(design)) design=matrix(design,ncol=1)
+  
+  if (coef.cov=="LOO") {
+    object=kmMonotonic1D(design, response, 
+                         basis.size, 
+                         covtype ,
+                         basis.type, 
+                         coef.cov = 0.5*(max(design)-min(design)),
+                         coef.var,
+                         nugget)
+    
+    theta=coef.cov_LOO(object)$par
+    
+    return(kmMonotonic1D(design, response, 
+                         basis.size, 
+                         covtype ,
+                         basis.type,
+                         coef.cov = theta,
+                         coef.var,
+                         nugget))
+  }
+  
   
   n <- nrow(design) # nb de points ? interpoler
   N <- basis.size
@@ -80,7 +103,7 @@ kmMonotonic1D <- function(design, response,
   }
   
   else if(covtype=="matern5_2"){
-
+    
     # Noyau matern 5/2 du processus Y
     k <- function(x, xp, sig, theta){
       sig^2*(1+sqrt(5)*(abs(x-xp))/theta+(5*(x-xp)^2)/(3*theta^2))*exp(-sqrt(5)*(abs(x-xp))/theta)
@@ -141,14 +164,17 @@ kmMonotonic1D <- function(design, response,
       }
     }
     
-    Gamma <- matrix(data = 0, nrow = N+1, ncol = N+1)
-    for(i in 1 : (N+1)){
-      for(j in 1 : (N+1)){
-        Gamma[i, j] = k(u[i], u[j], sig , theta)
+    fctGamma=function(.theta){
+      Gamma <- matrix(data = 0, nrow = N+1, ncol = N+1)
+      for(i in 1 : (N+1)){
+        for(j in 1 : (N+1)){
+          Gamma[i, j] = k(u[i], u[j], sig , .theta)
+        }
       }
+      Gamma <- Gamma + nugget * diag(N+1)
+      return(Gamma)
     }
-    Gamma <- Gamma + nugget * diag(N+1)
-    
+    Gamma=fctGamma(theta)
     
   }else if (basis.type == "C1"){
     
@@ -199,20 +225,24 @@ kmMonotonic1D <- function(design, response,
                                        delta-(1+delta-x)*hN(x, N)/2, delta)))
     }
     
-    Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-    Gamma[1,1] <- k(0,0, sig, theta)
-    for(j in 2 : (N+2)){
-      Gamma[1,j] <- kp2(0, u[j-1], sig, theta)
-    }
-    for(i in 2 : (N+2)){
-      Gamma[i,1] <- kp1(u[i-1], 0, sig, theta)
-    }
-    for(i in 2 : (N+2)){
+    fctGamma=function(.theta){
+      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+      Gamma[1,1] <- k(0,0, sig, .theta)
       for(j in 2 : (N+2)){
-        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, theta)
+        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
       }
+      for(i in 2 : (N+2)){
+        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
+      }
+      for(i in 2 : (N+2)){
+        for(j in 2 : (N+2)){
+          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
+        }
+      }
+      Gamma <- Gamma + nugget * diag(N+2) 
+      return(Gamma)
     }
-    Gamma <- Gamma + nugget * diag(N+2) 
+    Gamma=fctGamma(theta)
     
     A <- matrix(data = 0, ncol = N+2, nrow = n)
     for(i in 1 : n){ 
@@ -260,20 +290,24 @@ kmMonotonic1D <- function(design, response,
       }
     }
     
-    Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-    Gamma[1,1] <- k(0,0, sig, theta)
-    for(j in 2 : (N+2)){
-      Gamma[1,j] <- kp2(0, u[j-1], sig, theta)
-    }
-    for(i in 2 : (N+2)){
-      Gamma[i,1] <- kp1(u[i-1], 0, sig, theta)
-    }
-    for(i in 2 : (N+2)){
+    fctGamma=function(.theta){
+      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+      Gamma[1,1] <- k(0,0, sig, .theta)
       for(j in 2 : (N+2)){
-        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, theta)
+        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
       }
+      for(i in 2 : (N+2)){
+        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
+      }
+      for(i in 2 : (N+2)){
+        for(j in 2 : (N+2)){
+          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
+        }
+      }
+      Gamma <- Gamma + nugget * diag(N+2)
+      return(Gamma)
     }
-    Gamma <- Gamma + nugget * diag(N+2)
+    Gamma=fctGamma(theta)
     
   }else if(basis.type == "C3"){
     
@@ -313,20 +347,24 @@ kmMonotonic1D <- function(design, response,
       }
     }  
     
-    Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-    Gamma[1,1] <- k(0, 0, sig, theta)
-    for(j in 2 : (N+2)){
-      Gamma[1,j] <- kp2(0, u[j-1], sig, theta)
-    }
-    for(i in 2 : (N+2)){
-      Gamma[i,1] <- kp1(u[i-1], 0, sig, theta)
-    }
-    for(i in 2 : (N+2)){
+    fctGamma=function(.theta){
+      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+      Gamma[1,1] <- k(0, 0, sig, .theta)
       for(j in 2 : (N+2)){
-        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, theta)
+        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
       }
+      for(i in 2 : (N+2)){
+        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
+      }
+      for(i in 2 : (N+2)){
+        for(j in 2 : (N+2)){
+          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
+        }
+      }
+      Gamma <- Gamma + nugget * diag(N+2)
+      return(Gamma)
     }
-    Gamma <- Gamma + nugget * diag(N+2)
+    Gamma=fctGamma(theta)
     
   }else if(basis.type == "C3"){
     
@@ -366,20 +404,24 @@ kmMonotonic1D <- function(design, response,
       }
     }  
     
-    Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-    Gamma[1,1] <- k(0, 0, sig, theta)
-    for(j in 2 : (N+2)){
-      Gamma[1,j] <- kp2(0, u[j-1], sig, theta)
-    }
-    for(i in 2 : (N+2)){
-      Gamma[i,1] <- kp1(u[i-1], 0, sig, theta)
-    }
-    for(i in 2 : (N+2)){
+    fctGamma=function(.theta){
+      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+      Gamma[1,1] <- k(0, 0, sig, .theta)
       for(j in 2 : (N+2)){
-        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, theta)
+        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
       }
+      for(i in 2 : (N+2)){
+        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
+      }
+      for(i in 2 : (N+2)){
+        for(j in 2 : (N+2)){
+          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
+        }
+      }
+      Gamma <- Gamma + nugget * diag(N+2)
+      return(Gamma)
     }
-    Gamma <- Gamma + nugget * diag(N+2)
+    Gamma=fctGamma(theta)
     
   }else if(basis.type == "C3"){
     
@@ -419,20 +461,23 @@ kmMonotonic1D <- function(design, response,
       }
     }  
     
-    Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-    Gamma[1,1] <- k(0, 0, sig, theta)
+    fctGamma=function(.theta){Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+    Gamma[1,1] <- k(0, 0, sig, .theta)
     for(j in 2 : (N+2)){
-      Gamma[1,j] <- kp2(0, u[j-1], sig, theta)
+      Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
     }
     for(i in 2 : (N+2)){
-      Gamma[i,1] <- kp1(u[i-1], 0, sig, theta)
+      Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
     }
     for(i in 2 : (N+2)){
       for(j in 2 : (N+2)){
-        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, theta)
+        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
       }
     }
     Gamma <- Gamma + nugget * diag(N+2)
+    return(Gamma)
+    }
+    Gamma=fctGamma(theta)
     
   }else if(basis.type == "C3"){
     
@@ -472,20 +517,24 @@ kmMonotonic1D <- function(design, response,
       }
     }  
     
-    Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-    Gamma[1,1] <- k(0, 0, sig, theta)
-    for(j in 2 : (N+2)){
-      Gamma[1,j] <- kp2(0, u[j-1], sig, theta)
-    }
-    for(i in 2 : (N+2)){
-      Gamma[i,1] <- kp1(u[i-1], 0, sig, theta)
-    }
-    for(i in 2 : (N+2)){
+    fctGamma=function(.theta){
+      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+      Gamma[1,1] <- k(0, 0, sig, theta)
       for(j in 2 : (N+2)){
-        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, theta)
+        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
       }
+      for(i in 2 : (N+2)){
+        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
+      }
+      for(i in 2 : (N+2)){
+        for(j in 2 : (N+2)){
+          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
+        }
+      }
+      Gamma <- Gamma + nugget * diag(N+2)
+      return(Gamma)
     }
-    Gamma <- Gamma + nugget * diag(N+2)
+    Gamma=fctGamma(theta)
     
   }else if(basis.type == "C3"){
     
@@ -525,20 +574,24 @@ kmMonotonic1D <- function(design, response,
       }
     }  
     
-    Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-    Gamma[1,1] <- k(0, 0, sig, theta)
-    for(j in 2 : (N+2)){
-      Gamma[1,j] <- kp2(0, u[j-1], sig, theta)
-    }
-    for(i in 2 : (N+2)){
-      Gamma[i,1] <- kp1(u[i-1], 0, sig, theta)
-    }
-    for(i in 2 : (N+2)){
+    fctGamma=function(.theta){
+      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+      Gamma[1,1] <- k(0, 0, sig, .theta)
       for(j in 2 : (N+2)){
-        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, theta)
+        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
       }
+      for(i in 2 : (N+2)){
+        Gamma[i,1] <- kp1(u[i-1], 0, sig,.theta)
+      }
+      for(i in 2 : (N+2)){
+        for(j in 2 : (N+2)){
+          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
+        }
+      }
+      Gamma <- Gamma + nugget * diag(N+2)
+      return(Gamma)
     }
-    Gamma <- Gamma + nugget * diag(N+2)
+    Gamma=fctGamma(theta)
     
   }
   else stop ("basis.type",basis.type, "not supported")
@@ -581,7 +634,7 @@ kmMonotonic1D <- function(design, response,
     zetoil <- solve.QP(invGamma,dvec=rep(0,ncol(A)),Amat=t(Amat),bvec=c(response,rep(0,ncol(A))),meq=n)$solution
   
   return(structure(
-    list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,
+    list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,fctGamma=fctGamma,
          call=list(design=design,response=response,basis.size=basis.size,covtype=covtype,basis.type=basis.type,
                    coef.cov=coef.cov,coef.var=coef.var, nugget=nugget)
     ),class="kmMonotonic1D"))

@@ -15,10 +15,30 @@
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(10, 5, 9)
 #' model = kmConvex1D(design, response)
+#' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=10)
+#' points(design,output,pch=19)
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(1, 5, 9)
 #' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2")
-#' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=500)
+#' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=10)
+#' points(design,response,pch=19)
+
+#' ## Golchi Example
+#' f <- function(x){
+#' log(20*x+1)
+#' }
+#' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
+#' response <- f(design)
+#' meany <- mean(response)
+#' f <- function(x){
+#'  log(20*x+1)-meany
+#' }
+#' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
+#' response <- f(design)
+#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2", coef.var=37,basis.size=50)
+#' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
+#' points(design,response,pch=19)
+
 
 plotCK <- function(x=seq(f=min(object$call$design),t=max(object$call$design),l=100), object, spline=TRUE, nsim=100, median=TRUE, mean=FALSE, minmax=FALSE, quantiles=TRUE, col='black',add=F){
   if (!isTRUE(add))
