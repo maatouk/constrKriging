@@ -1,0 +1,66 @@
+#' @title Simulate responses vectors from a kmConvex1D object
+#' @param object kmConvex1D model
+#' @param newdata a vector which represents the points where to performs predictions
+#' @param nsim the number of response vectors to simulate
+#' @param seed optional random seed
+#' @import MASS
+
+#' simulate(object=kmConvex1D(design=c(0.2, 0.5, 0.9), response=c(3, -5, 8)),newdata=seq(f=0,t=1,l=100),nsim=10)
+#' @examples 
+#' design = c(0.1, 0.5, 0.9)
+#' response = c(8, 5, 9)
+#' model = kmConvex1D(design, response)
+#' graphics::plot(x=seq(0,1,,100),y=simulate_process(object=model, newdata=seq(0,1,,100), nsim=1))
+
+simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
+  if (!is.null(seed)) set.seed(seed)
+  
+  N <- object$call$basis.size  
+  zetoil <- object$zetoil
+  A <- object$A
+  Gamma <- object$Gamma
+  p <- ncol(A)-nrow(object$call$design)
+  response <- object$call$response
+  D <- object$D
+  
+  
+  B <- diag(ncol(A)) - t(A) %*% solve(A %*% t(A)) %*% A     ## Proj sur F_0
+  epsilontilde <- eigen(t(B) %*% Gamma %*% B)$vectors
+  epsilon <- B %*% epsilontilde[, 1 : p]
+  c <- eigen(t(B) %*% Gamma %*% B)$values
+  d <- c[1 : p]                     # le plus grand p valeurs propres
+  
+  
+  zcentre <- Gamma %*% t(A) %*% solve(A %*% Gamma %*% t(A)) %*% response
+  
+  
+  setoil <- t(epsilon) %*% (zetoil - zcentre)
+  
+  Xi <- matrix(-1, ncol = nsim, nrow = (N+3))
+  for (j in 1 : nsim){
+    Xi_current <- Xi[, j]
+    while (min(Xi_current[-(1:2)]) <= 0){
+      #s <- rnorm(1, 0, d) ## Dans le Cas o? p = 1 i.e (N = n). 
+      s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
+      t <- as.numeric(exp(sum(setoil * setoil / d) - sum(s * setoil / d)))
+      unif <- runif(1, 0, 1)
+      while(unif > t ){
+        #s <- rnorm(1, setoil, d) # Pour N = n
+        s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
+        t <- as.numeric(exp(sum(setoil * setoil / d) - sum(s * setoil / d)))
+        unif <- runif(1, 0, 1)
+      }
+      if(min(zcentre > 0)){
+        s <- matrix(mvrnorm(1, rep(0, p), diag(d)))
+        Xi_current <- as.vector(zcentre) + (epsilon %*% s)
+      }
+      else {
+        Xi_current <- as.vector(zetoil) + (epsilon %*% s)
+      }
+    }
+    Xi[, j] <- Xi_current
+  }
+  
+  
+  return(Phi1D.kmConvex1D(object, newdata)%*%Xi)
+}
