@@ -19,24 +19,26 @@ kmBounded1D <- function(design, response,
                         coef.var = var(response),
                         lower = min(response)-(max(response)-min(response))*.1,
                         upper = max(response)+(max(response)-min(response))*.1,
-                        nugget = 1e-8) {
+                        nugget = 1e-7*sd(response)) {
   
   if (!is.matrix(design)) design=matrix(design,ncol=1)
   
   
   if (coef.cov=="LOO") {
-    object = kmBounded1D <- function(design, response, 
+    object = kmBounded1D(design, response, 
                                      basis.size = dim(design)[1]+2+10, 
                                      covtype,
-                                     coef.cov,
+                                     coef.cov=0.5*(max(design)-min(design)),
                                      coef.var,
                                      lower,
                                      upper,
                                      nugget)
       
-      theta=coef.cov_LOO(object)$par
+      theta=coef.cov_LOO(object)
     
-    return(kmBounded1D(design, response, 
+    model = NULL
+    while(is.null(model)) # auto raise nugget if needed
+      try(model <- kmBounded1D(design, response, 
                                    basis.size, 
                                    covtype,
                                    coef.cov = theta,
@@ -44,6 +46,8 @@ kmBounded1D <- function(design, response,
                                    lower,
                                    upper,
                                    nugget))
+    
+    return(model)
   }
     
     n <- nrow(design) # nb de points ? interpoler
@@ -62,9 +66,7 @@ kmBounded1D <- function(design, response,
       }
       
     }
-    else if (covtype=='matern3_2'){
-      
-    }
+    
     
     else stop('covtype', covtype, 'not supported')
 
@@ -122,7 +124,7 @@ kmBounded1D <- function(design, response,
       list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D, fctGamma=fctGamma,
            call=list(design=design,response=response,basis.size=basis.size,covtype=covtype,
                      coef.cov=coef.cov,coef.var=coef.var, nugget=nugget, lower=lower,
-                     upper=upper)),class="kmBounded"))
+                     upper=upper)),class="kmBounded1D"))
   }
   
   

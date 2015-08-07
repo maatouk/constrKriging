@@ -12,35 +12,56 @@
 #' @examples 
 #' kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9))
 #' kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9), basis.type="C0")
-#' kmMonotonic1D(design=sort(runif(5)), response=cumsum(runif(5)),nugget=1e-4)
+#' kmMonotonic1D(design=sort(runif(5)),response=cumsum(runif(5)),nugget=1e-4,covtype="gauss")
+
+#' ## Golchi Example
+#' f <- function(x){
+#' log(20*x+1)
+#' }
+#' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
+#' response <- f(design)
+#' meany <- mean(response)
+#' f <- function(x){
+#'  log(20*x+1)-meany
+#' }
+#' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
+#' response <- f(design)
+#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2", coef.var=1,basis.size=40, nugget=1e-5)
+
+
+
 kmMonotonic1D <- function(design, response, 
                           basis.size = dim(design)[1]+2+10, 
                           covtype = "gauss",
                           basis.type = "C1", 
                           coef.cov = "LOO", #0.5*(max(design)-min(design)),
                           coef.var = var(response),
-                          nugget = 1e-8) {
+                          nugget = 1e-7*sd(response)) {
   
   if (!is.matrix(design)) design=matrix(design,ncol=1)
   
   if (coef.cov=="LOO") {
     object=kmMonotonic1D(design, response, 
                          basis.size, 
-                         covtype ,
+                         covtype,
                          basis.type, 
                          coef.cov = 0.5*(max(design)-min(design)),
                          coef.var,
                          nugget)
     
-    theta=coef.cov_LOO(object)$par
+    theta=coef.cov_LOO(object)
     
-    return(kmMonotonic1D(design, response, 
-                         basis.size, 
-                         covtype ,
-                         basis.type,
-                         coef.cov = theta,
-                         coef.var,
-                         nugget))
+    model = NULL
+    while(is.null(model)) # auto raise nugget if needed
+      try(model <- kmMonotonic1D(design, response, 
+                                 basis.size, 
+                                 covtype ,
+                                 basis.type,
+                                 coef.cov = theta,
+                                 coef.var,
+                                 nugget=nugget*10))
+    
+    return(model)
   }
   
   
@@ -58,20 +79,15 @@ kmMonotonic1D <- function(design, response,
     k <- function(x, xp, sig, theta){
       (sig^2)*exp(-(x-xp)^2/(2*theta^2))
     }
-    
     # D?riv?e % x
     kp1 <- function(x, xp, sig, theta){
       -(x-xp)/(theta^2)*k(x,xp, sig, theta)
     }
-    
     # D?riv?e % xp
     kp2 <- function(x, xp, sig, theta){
       -kp1(x,xp, sig, theta)
     }
-    
-    
     # Noyau du processus d?riv?e (D?riv?e % x et xp (ou l'inverse))
-    
     kpp <- function(x, xp, sig, theta){
       (1/(theta^2))*k(x,xp, sig, theta)*(1-(x-xp)^2/(theta^2))
     }
@@ -82,20 +98,15 @@ kmMonotonic1D <- function(design, response,
     k <- function(x, xp, sig, theta){
       (sig^2)*(1+(sqrt(3)*abs(x-xp)/theta))*exp(-sqrt(3)*abs(x-xp)/theta)
     }
-    
     # D?riv?e % x
     kp1 <- function(x, xp,sig, theta){
       sig^2*(sqrt(3)/theta*sign(x-xp)*exp(-sqrt(3)*(abs(x-xp)/theta))*(-sqrt(3)/theta*abs(x-xp)))
     }
-    
     # D?riv?e % xp
     kp2 <- function(x, xp, sig, theta){
       -kp1(x,xp, sig, theta)
     }
-    
-    
     # Noyau du processus d?riv?e (D?riv?e % x et xp (ou l'inverse))
-    
     kpp <- function(x, xp, sig, theta){
       sig^2*((3/theta^2)*exp(-sqrt(3)/theta*abs(x-xp))*(1-sqrt(3)/theta*abs(x-xp)))
     }
@@ -108,18 +119,15 @@ kmMonotonic1D <- function(design, response,
     k <- function(x, xp, sig, theta){
       sig^2*(1+sqrt(5)*(abs(x-xp))/theta+(5*(x-xp)^2)/(3*theta^2))*exp(-sqrt(5)*(abs(x-xp))/theta)
     }
-    
     # D?riv?e % x
     kp1 <- function(x, xp, sig, theta){
       sig^2*(sqrt(5)/(theta)*signp(x-xp)+10*(x-xp)/(3*theta^2))*exp(-sqrt(5)*(abs(x-xp))/theta)-
         sqrt(5)/(theta)*signp(x-xp)*k(x,xp, sig, theta)
     }
-    
     # D?riv?e % xp
     kp2 <- function(x, xp, sig, theta){
       -kp1(x,xp, sig, theta)
     }
-    
     # Noyau du processus d?riv?e (D?riv?e % x et xp (ou l'inverse))
     kpp <- function(x, xp, sig, theta){
       sig^2*(-10/(3*theta^2)*exp(-sqrt(5)*(abs(x-xp))/theta)+
@@ -177,24 +185,18 @@ kmMonotonic1D <- function(design, response,
     Gamma=fctGamma(theta)
     
   }else if (basis.type == "C1"){
-    
-    
     h <- function(x){
       ifelse(x >= -1 & x <= 1, 1-abs(x), 0)
     }
-    
     h0 <- function(x, N){
       h(x*N)
     }
-    
     hN <- function(x, N){
       h((x-u[N+1])*N)
     }
-    
     hi <- function(x, i, N){
       h((x - u[i+1])*N)
     }
-    
     phii <- function(x,i, N){
       delta <- 1/N
       ifelse(x <= u[i], 0,  
@@ -205,8 +207,6 @@ kmMonotonic1D <- function(design, response,
              )
       )
     }
-    
-    
     phi0 <- function(x, N){
       delta <- 1/N
       ifelse(x <= -delta, -delta/2,  
@@ -216,8 +216,6 @@ kmMonotonic1D <- function(design, response,
              )
       )
     }
-    
-    
     phiN <- function(x, N){
       delta <- 1/N
       ifelse(x >= u[N] & x <= u[N+1], (x - u[N])*hN(x, N)/2, 
@@ -261,8 +259,6 @@ kmMonotonic1D <- function(design, response,
       ifelse(x <= delta & x>= -delta, -2/(3*delta^2)*x^3+1/(5*delta^4)*x^5+x+(8/15)*delta,
              ifelse(x>= delta,16*delta/15, 0))
     }
-    
-    
     phiN <- function(x, N){
       delta <- 1/N
       phik(x-u[N+1], N)
@@ -316,26 +312,20 @@ kmMonotonic1D <- function(design, response,
       ifelse(x >= -delta & x <= delta, -x^7/(7*delta^6)+(3*x^5)/(5*delta^4)-x^3/(delta^2)+
                x, ifelse(x >= delta, 16*delta/35, -16*delta/35))
     }
-    
     phik <- function(x, N){
       delta <- 1/N
       ifelse(x <= delta & x>= -delta, -1/(7*delta^6)*x^7+3/(5*delta^4)*x^5-
                1/(delta^2)*x^3+x+(16/35)*delta,
              ifelse(x>= delta, (32/35)*delta, 0))
     }
-    
-    
     phiN <- function(x, N){
       delta <- 1/N
       phik(x-u[N+1], N)
     }
-    
     phii <- function(x, i, N){
       dela <- 1/N
       phik(x-u[i+1],N)
     }
-    
-    
     
     A <- matrix(data = 0, ncol = N+2, nrow = n)
     for(i in 1 : n){ 
@@ -355,233 +345,6 @@ kmMonotonic1D <- function(design, response,
       }
       for(i in 2 : (N+2)){
         Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        for(j in 2 : (N+2)){
-          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
-        }
-      }
-      Gamma <- Gamma + nugget * diag(N+2)
-      return(Gamma)
-    }
-    Gamma=fctGamma(theta)
-    
-  }else if(basis.type == "C3"){
-    
-    phi0 <- function(x, N){
-      delta <- 1/N
-      ifelse(x >= -delta & x <= delta, -x^7/(7*delta^6)+(3*x^5)/(5*delta^4)-x^3/(delta^2)+
-               x, ifelse(x >= delta, 16*delta/35, -16*delta/35))
-    }
-    
-    phik <- function(x, N){
-      delta <- 1/N
-      ifelse(x <= delta & x>= -delta, -1/(7*delta^6)*x^7+3/(5*delta^4)*x^5-
-               1/(delta^2)*x^3+x+(16/35)*delta,
-             ifelse(x>= delta, (32/35)*delta, 0))
-    }
-    
-    
-    phiN <- function(x, N){
-      delta <- 1/N
-      phik(x-u[N+1], N)
-    }
-    
-    phii <- function(x, i, N){
-      dela <- 1/N
-      phik(x-u[i+1],N)
-    }
-    
-    
-    
-    A <- matrix(data = 0, ncol = N+2, nrow = n)
-    for(i in 1 : n){ 
-      A[i,1] = 1
-      A[i,2] = phi0(design[i], N)
-      A[i,N+2] = phiN(design[i], N)
-      for(j in 3 : (N+1)){
-        A[i,j] = phii(design[i], j-2, N)
-      }
-    }  
-    
-    fctGamma=function(.theta){
-      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-      Gamma[1,1] <- k(0, 0, sig, .theta)
-      for(j in 2 : (N+2)){
-        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        for(j in 2 : (N+2)){
-          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
-        }
-      }
-      Gamma <- Gamma + nugget * diag(N+2)
-      return(Gamma)
-    }
-    Gamma=fctGamma(theta)
-    
-  }else if(basis.type == "C3"){
-    
-    phi0 <- function(x, N){
-      delta <- 1/N
-      ifelse(x >= -delta & x <= delta, -x^7/(7*delta^6)+(3*x^5)/(5*delta^4)-x^3/(delta^2)+
-               x, ifelse(x >= delta, 16*delta/35, -16*delta/35))
-    }
-    
-    phik <- function(x, N){
-      delta <- 1/N
-      ifelse(x <= delta & x>= -delta, -1/(7*delta^6)*x^7+3/(5*delta^4)*x^5-
-               1/(delta^2)*x^3+x+(16/35)*delta,
-             ifelse(x>= delta, (32/35)*delta, 0))
-    }
-    
-    
-    phiN <- function(x, N){
-      delta <- 1/N
-      phik(x-u[N+1], N)
-    }
-    
-    phii <- function(x, i, N){
-      dela <- 1/N
-      phik(x-u[i+1],N)
-    }
-    
-    
-    
-    A <- matrix(data = 0, ncol = N+2, nrow = n)
-    for(i in 1 : n){ 
-      A[i,1] = 1
-      A[i,2] = phi0(design[i], N)
-      A[i,N+2] = phiN(design[i], N)
-      for(j in 3 : (N+1)){
-        A[i,j] = phii(design[i], j-2, N)
-      }
-    }  
-    
-    fctGamma=function(.theta){Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-    Gamma[1,1] <- k(0, 0, sig, .theta)
-    for(j in 2 : (N+2)){
-      Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
-    }
-    for(i in 2 : (N+2)){
-      Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
-    }
-    for(i in 2 : (N+2)){
-      for(j in 2 : (N+2)){
-        Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
-      }
-    }
-    Gamma <- Gamma + nugget * diag(N+2)
-    return(Gamma)
-    }
-    Gamma=fctGamma(theta)
-    
-  }else if(basis.type == "C3"){
-    
-    phi0 <- function(x, N){
-      delta <- 1/N
-      ifelse(x >= -delta & x <= delta, -x^7/(7*delta^6)+(3*x^5)/(5*delta^4)-x^3/(delta^2)+
-               x, ifelse(x >= delta, 16*delta/35, -16*delta/35))
-    }
-    
-    phik <- function(x, N){
-      delta <- 1/N
-      ifelse(x <= delta & x>= -delta, -1/(7*delta^6)*x^7+3/(5*delta^4)*x^5-
-               1/(delta^2)*x^3+x+(16/35)*delta,
-             ifelse(x>= delta, (32/35)*delta, 0))
-    }
-    
-    
-    phiN <- function(x, N){
-      delta <- 1/N
-      phik(x-u[N+1], N)
-    }
-    
-    phii <- function(x, i, N){
-      dela <- 1/N
-      phik(x-u[i+1],N)
-    }
-    
-    
-    
-    A <- matrix(data = 0, ncol = N+2, nrow = n)
-    for(i in 1 : n){ 
-      A[i,1] = 1
-      A[i,2] = phi0(design[i], N)
-      A[i,N+2] = phiN(design[i], N)
-      for(j in 3 : (N+1)){
-        A[i,j] = phii(design[i], j-2, N)
-      }
-    }  
-    
-    fctGamma=function(.theta){
-      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-      Gamma[1,1] <- k(0, 0, sig, theta)
-      for(j in 2 : (N+2)){
-        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        for(j in 2 : (N+2)){
-          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
-        }
-      }
-      Gamma <- Gamma + nugget * diag(N+2)
-      return(Gamma)
-    }
-    Gamma=fctGamma(theta)
-    
-  }else if(basis.type == "C3"){
-    
-    phi0 <- function(x, N){
-      delta <- 1/N
-      ifelse(x >= -delta & x <= delta, -x^7/(7*delta^6)+(3*x^5)/(5*delta^4)-x^3/(delta^2)+
-               x, ifelse(x >= delta, 16*delta/35, -16*delta/35))
-    }
-    
-    phik <- function(x, N){
-      delta <- 1/N
-      ifelse(x <= delta & x>= -delta, -1/(7*delta^6)*x^7+3/(5*delta^4)*x^5-
-               1/(delta^2)*x^3+x+(16/35)*delta,
-             ifelse(x>= delta, (32/35)*delta, 0))
-    }
-    
-    
-    phiN <- function(x, N){
-      delta <- 1/N
-      phik(x-u[N+1], N)
-    }
-    
-    phii <- function(x, i, N){
-      dela <- 1/N
-      phik(x-u[i+1],N)
-    }
-    
-    
-    
-    A <- matrix(data = 0, ncol = N+2, nrow = n)
-    for(i in 1 : n){ 
-      A[i,1] = 1
-      A[i,2] = phi0(design[i], N)
-      A[i,N+2] = phiN(design[i], N)
-      for(j in 3 : (N+1)){
-        A[i,j] = phii(design[i], j-2, N)
-      }
-    }  
-    
-    fctGamma=function(.theta){
-      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-      Gamma[1,1] <- k(0, 0, sig, .theta)
-      for(j in 2 : (N+2)){
-        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        Gamma[i,1] <- kp1(u[i-1], 0, sig,.theta)
       }
       for(i in 2 : (N+2)){
         for(j in 2 : (N+2)){

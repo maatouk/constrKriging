@@ -35,7 +35,7 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2", coef.var=37,basis.size=50)
+#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2", coef.var=38.14,basis.size=50, nugget=1e-7)
 #' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
 #' points(design,response,pch=19)
 

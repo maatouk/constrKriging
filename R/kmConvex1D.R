@@ -10,12 +10,13 @@
 #' @import quadrpog
 #' @examples
 #' kmConvex1D(design=c(0.1, 0.5, 0.9), response=c(10, 5, 9))
+#' kmConvex1D(design=c(0.1, 0.5,.7, 0.9), response=c(10, 5,7, 9))
 kmConvex1D <- function(design, response, 
                        basis.size = dim(design)[1]+2+10, 
                        covtype = "gauss",
                        coef.cov = "LOO", #0.5*(max(design)-min(design)),
                        coef.var = var(response),
-                       nugget = 1e-8) {
+                       nugget = 1e-7*sd(response)) {
   
   if (!is.matrix(design)) design=matrix(design,ncol=1)
   
@@ -27,14 +28,18 @@ kmConvex1D <- function(design, response,
                       coef.var,
                       nugget)
     
-    theta=coef.cov_LOO(object)$par
+    theta=coef.cov_LOO(object)
     
-    return(kmConvex1D(design, response, 
+    model = NULL
+    while(is.null(model)) # auto raise nugget if needed
+      try(model <- kmConvex1D(design, response, 
                       basis.size, 
                       covtype ,
                       coef.cov = theta,
                       coef.var,
-                      nugget))
+                      nugget=nugget*10))
+    
+    return(model)
   }
   
   n <- nrow(design) # nb de points ? interpoler
@@ -94,9 +99,7 @@ kmConvex1D <- function(design, response,
     
     
   }
-  else if (covtype=='matern3_2'){
-    
-  }
+  
   
   else stop('covtype', covtype, 'not supported')
   
