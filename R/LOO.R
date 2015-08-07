@@ -1,5 +1,5 @@
 coef.cov_LOO =function(object) {
-print(object)
+
   fctGamma = object$fctGamma
   input=object$call$design
   output=object$call$response
