@@ -26,7 +26,7 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2", coef.var=1,basis.size=40, nugget=1e-5)
+#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2", coef.var=1, coef.cov=0.3,basis.size=50)
 
 
 
@@ -34,35 +34,35 @@ kmMonotonic1D <- function(design, response,
                           basis.size = dim(design)[1]+2+10, 
                           covtype = "gauss",
                           basis.type = "C1", 
-                          coef.cov = "LOO", #0.5*(max(design)-min(design)),
+                          coef.cov = 0.5*(max(design)-min(design)),
                           coef.var = var(response),
                           nugget = 1e-7*sd(response)) {
   
   if (!is.matrix(design)) design=matrix(design,ncol=1)
   
-  if (coef.cov=="LOO") {
-    object=kmMonotonic1D(design, response, 
-                         basis.size, 
-                         covtype,
-                         basis.type, 
-                         coef.cov = 0.5*(max(design)-min(design)),
-                         coef.var,
-                         nugget)
-    
-    theta=coef.cov_LOO(object)
-    
-    model = NULL
-    while(is.null(model)) # auto raise nugget if needed
-      try(model <- kmMonotonic1D(design, response, 
-                                 basis.size, 
-                                 covtype ,
-                                 basis.type,
-                                 coef.cov = theta,
-                                 coef.var,
-                                 nugget=nugget*10))
-    
-    return(model)
-  }
+#   if (coef.cov=="LOO") {
+#     object=kmMonotonic1D(design, response, 
+#                          basis.size, 
+#                          covtype,
+#                          basis.type, 
+#                          coef.cov = 0.5*(max(design)-min(design)),
+#                          coef.var,
+#                          nugget)
+#     
+#     theta=coef.cov_LOO(object)
+#     
+#     model = NULL
+#     while(is.null(model)) # auto raise nugget if needed
+#       try(model <- kmMonotonic1D(design, response, 
+#                                  basis.size, 
+#                                  covtype ,
+#                                  basis.type,
+#                                  coef.cov = theta,
+#                                  coef.var,
+#                                  nugget=nugget*10))
+#     
+#     return(model)
+#   }
   
   
   n <- nrow(design) # nb de points ? interpoler
@@ -100,7 +100,7 @@ kmMonotonic1D <- function(design, response,
     }
     # D?riv?e % x
     kp1 <- function(x, xp,sig, theta){
-      sig^2*(sqrt(3)/theta*sign(x-xp)*exp(-sqrt(3)*(abs(x-xp)/theta))*(-sqrt(3)/theta*abs(x-xp)))
+      sig^2*(sqrt(3)/theta*signp(x-xp)*exp(-sqrt(3)*(abs(x-xp)/theta))*(-sqrt(3)/theta*abs(x-xp)))
     }
     # D?riv?e % xp
     kp2 <- function(x, xp, sig, theta){
@@ -418,8 +418,8 @@ Phi1D.kmMonotonic1D <- function(model, newdata){
   x <- newdata
   if(model$call$basis.type=='C0'){
     v <- matrix(0, nrow = length(x), ncol = N + 1)
-    v[,1] <- apply(t(x), 2, model$phi0, N = N)
-    v[,N+1] <- apply(t(x), 2, model$phiN, N = N)
+    v[,1] <- model$phi0(x, N = N)
+    v[,N+1] <- model$phiN(x, N = N)
     for(j in 2 : (N)){
       v[,j] = model$phii(x, j-1, N)
     }
@@ -429,8 +429,8 @@ Phi1D.kmMonotonic1D <- function(model, newdata){
     
     v <- matrix(0, nrow = length(x), ncol = N + 2)
     v[,1] <- 1
-    v[,2] <- apply(t(x), 2, model$phi0, N = N)
-    v[,N+2] <- apply(t(x), 2, model$phiN, N = N)
+    v[,2] <- model$phi0(x, N = N)
+    v[,N+2] <- model$phiN(x, N = N)
     for(j in 3 : (N+1)){
       v[,j] = model$phii(x, j-2, N)
     }

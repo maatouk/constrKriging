@@ -1,7 +1,7 @@
 Package: constrKriging
 Type: Package
 Title: Kriging with inequality constraints
-Version: 0.1
+Version: 0.1.1
 Date: 2015-02-19
 Author: Hassan Maatouk, Yann Richet, Olivier Roustant
 Maintainer: Hassan Maatouk <hassan.maatouk@mines-stetienne.fr>

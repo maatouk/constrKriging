@@ -9,38 +9,38 @@
 #' @param nugget an optimal value used as nugget effect to solve the numerical inverse matrix problem
 #' @import quadrpog
 #' @examples
-#' kmConvex1D(design=c(0.1, 0.5, 0.9), response=c(10, 5, 9))
-#' kmConvex1D(design=c(0.1, 0.5,.7, 0.9), response=c(10, 5,7, 9))
+#' kmConvex1D(design=c(0.1, 0.5, 0.9), response=c(10, 5, 9), coef.cov = 0.3)
+#' kmConvex1D(design=c(0.1, 0.5,.7, 0.9), response=c(10, 5,7, 9), coef.cov = 0.3)
 kmConvex1D <- function(design, response, 
                        basis.size = dim(design)[1]+2+10, 
                        covtype = "gauss",
-                       coef.cov = "LOO", #0.5*(max(design)-min(design)),
+                       coef.cov = 0.5*(max(design)-min(design)),
                        coef.var = var(response),
                        nugget = 1e-7*sd(response)) {
   
   if (!is.matrix(design)) design=matrix(design,ncol=1)
   
-  if (coef.cov=="LOO") {
-    object=kmConvex1D(design, response, 
-                      basis.size, 
-                      covtype ,
-                      coef.cov = 0.5*(max(design)-min(design)),
-                      coef.var,
-                      nugget)
-    
-    theta=coef.cov_LOO(object)
-    
-    model = NULL
-    while(is.null(model)) # auto raise nugget if needed
-      try(model <- kmConvex1D(design, response, 
-                      basis.size, 
-                      covtype ,
-                      coef.cov = theta,
-                      coef.var,
-                      nugget=nugget*10))
-    
-    return(model)
-  }
+  #   if (coef.cov=="LOO") {
+  #     object=kmConvex1D(design, response, 
+  #                       basis.size, 
+  #                       covtype ,
+  #                       coef.cov = 0.5*(max(design)-min(design)),
+  #                       coef.var,
+  #                       nugget)
+  #     
+  #     theta=coef.cov_LOO(object)
+  #     
+  #     model = NULL
+  #     while(is.null(model)) # auto raise nugget if needed
+  #       try(model <- kmConvex1D(design, response, 
+  #                       basis.size, 
+  #                       covtype ,
+  #                       coef.cov = theta,
+  #                       coef.var,
+  #                       nugget=nugget*10))
+  #     
+  #     return(model)
+  #   }
   
   n <- nrow(design) # nb de points ? interpoler
   N <- basis.size
@@ -193,8 +193,8 @@ Phi1D.kmConvex1D <- function(model, newdata){
   v <- matrix(0, nrow = length(x), ncol = N+3)
   v[,1] <- 1
   v[,2] <- x
-  v[,3] <- apply(t(x), 2, model$phi0, N = N)
-  v[,N+3] <- apply(t(x), 2, model$phiN, N = N)
+  v[,3] <- model$phi0(x, N = N)
+  v[,N+3] <- model$phiN(x, N = N)
   for(j in 4 : (N+2)){
     v[,j] = model$phii(x, j-3, N)
   }

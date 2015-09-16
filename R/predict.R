@@ -22,4 +22,4 @@ predictCK <- function(object, newdata, nsim = 100){
 #' @param newdata data in design space where to evaluate simlations
 simulate_process <- function(object, nsim, seed, newdata) UseMethod("simulate_process")
 
-predict.kmMonotonic1D <- predict.kmConvex1D <- predict.kmBounded <- predictCK
+predict.kmMonotonic1D <- predict.kmConvex1D <- predict.kmBounded1D <- predictCK

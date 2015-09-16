@@ -19,7 +19,7 @@
 #' points(design,output,pch=19)
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(1, 5, 9)
-#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2")
+#' model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2")
 #' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=10)
 #' points(design,response,pch=19)
 
@@ -35,11 +35,17 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2", coef.var=38.14,basis.size=50, nugget=1e-7)
+#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=50, coef.cov=3, basis.size=50)
 #' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
+#' lines(x,constrSpline(model)(x),lty=2,col='black',lwd=1)
+#' lines(x,f(x))
 #' points(design,response,pch=19)
 
 
+## Bounded Example 
+#' model = kmBounded1D(design=c(0.1, 0.3, 0.5, 0.9), response=c(7, -8, 9, 15), lower=-10, upper = 18, coef.cov=1)
+#' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=40)
+#' points(design,response,pch=19)
 plotCK <- function(x=seq(f=min(object$call$design),t=max(object$call$design),l=100), object, spline=TRUE, nsim=100, median=TRUE, mean=FALSE, minmax=FALSE, quantiles=TRUE, col='black',add=F){
   if (!isTRUE(add))
     graphics::plot(x=range(object$call$design), y=range(object$call$response), type='n', xlab='design', ylab='response')
@@ -66,4 +72,4 @@ plotCK <- function(x=seq(f=min(object$call$design),t=max(object$call$design),l=1
   }
 }
 
-plot.kmMonotonic1D <- plot.kmConvex1D <- plot.kmBounded <- plotCK
+plot.kmMonotonic1D <- plot.kmConvex1D <- plot.kmBounded1D <- plotCK

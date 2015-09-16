@@ -30,7 +30,7 @@ coef.cov_LOO =function(object) {
     for(i in 1 : length(input)){
       sum = sum + (output[i]-(object$A%*%fctzetoil(theta,i))[i])^2
     }
-    return(sum)
+    return(sum/length(input))
   }
   
   fctoptim.try =  function(theta) {
