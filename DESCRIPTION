@@ -3,7 +3,7 @@ Type: Package
 Title: Kriging with inequality constraints
 Version: 0.1.1
 Date: 2015-02-19
-Author: Hassan Maatouk, Yann Richet, Olivier Roustant
+Author: Hassan Maatouk, Yann Richet
 Maintainer: Hassan Maatouk <hassan.maatouk@mines-stetienne.fr>
 Description: Build, simulate, predict kriging model using inequality constraints like monotonicity, convexity and boundaries. Kriging model is similar to DiceKriging.
 License: GPL-3
