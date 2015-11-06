@@ -64,8 +64,19 @@ kmBounded1D <- function(design, response,
       k <- function(x, xp, sig, theta){
         (sig^2)*exp(-(x-xp)^2/(2*theta^2))
   }
-
+    }else if (covtype=='matern3_2'){
+    # Noyau matern 3/2 du processus Y
+    k <- function(x, xp, sig, theta){
+      (sig^2)*(1+(sqrt(3)*abs(x-xp)/theta))*exp(-sqrt(3)*abs(x-xp)/theta)
     }
+        }
+else if(covtype=="matern5_2"){
+  
+  # Noyau matern 5/2 du processus Y
+  k <- function(x, xp, sig, theta){
+    sig^2*(1+sqrt(5)*(abs(x-xp))/theta+(5*(x-xp)^2)/(3*theta^2))*exp(-sqrt(5)*(abs(x-xp))/theta)
+  }
+}
     
     
     else stop('covtype', covtype, 'not supported')

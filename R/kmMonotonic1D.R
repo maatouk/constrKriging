@@ -14,7 +14,7 @@
 #' kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9), basis.type="C0")
 #' kmMonotonic1D(design=sort(runif(5)),response=cumsum(runif(5)),nugget=1e-4,covtype="gauss")
 
-#' ## Golchi Example
+# ## Golchi Example
 #' f <- function(x){
 #' log(20*x+1)
 #' }
@@ -22,17 +22,17 @@
 #' response <- f(design)
 #' meany <- mean(response)
 #' f <- function(x){
-#'  log(20*x+1)-meany
+#' log(20*x+1)-meany
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2", coef.var=1, coef.cov=0.3,basis.size=50)
+#' model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2", coef.var=1, coef.cov=0.3,basis.size=50)
 
 
 
 kmMonotonic1D <- function(design, response, 
                           basis.size = dim(design)[1]+2+10, 
-                          covtype = "gauss",
+                          covtype = "matern5_2",
                           basis.type = "C1", 
                           coef.cov = 0.5*(max(design)-min(design)),
                           coef.var = var(response),
@@ -252,111 +252,111 @@ kmMonotonic1D <- function(design, response,
       }
     }
     
-    
-  }else if(basis.type == "C2"){
-    phik <- function(x, N){
-      delta <- 1/N
-      ifelse(x <= delta & x>= -delta, -2/(3*delta^2)*x^3+1/(5*delta^4)*x^5+x+(8/15)*delta,
-             ifelse(x>= delta,16*delta/15, 0))
-    }
-    phiN <- function(x, N){
-      delta <- 1/N
-      phik(x-u[N+1], N)
-    }
-    
-    phii <- function(x, i, N){
-      delta <- 1/N
-      phik(x-u[i+1],N)
-    }
-    
-    phi0 <- function(x, N){
-      delta <- 1/N
-      ifelse(x <= delta & x >= -delta, x^5/(5*delta^4)-(2*x^3)/(3*delta^2)+x,
-             ifelse(x <= -delta, -(8/15)*delta, (8/15)*delta))
-    }
-    
-    
-    A <- matrix(data = 0, ncol = N+2, nrow = n)
-    for(i in 1 : n){ 
-      A[i,1] = 1
-      A[i,2] = phi0(design[i], N)
-      A[i,N+2] = phiN(design[i], N)
-      for(j in 3 : (N+1)){
-        A[i,j] = phii(design[i], j-2, N)
-      }
-    }
-    
-    fctGamma=function(.theta){
-      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-      Gamma[1,1] <- k(0,0, sig, .theta)
-      for(j in 2 : (N+2)){
-        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        for(j in 2 : (N+2)){
-          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
-        }
-      }
-      Gamma <- Gamma + nugget * diag(N+2)
-      return(Gamma)
-    }
-    Gamma=fctGamma(theta)
-    
-  }else if(basis.type == "C3"){
-    
-    phi0 <- function(x, N){
-      delta <- 1/N
-      ifelse(x >= -delta & x <= delta, -x^7/(7*delta^6)+(3*x^5)/(5*delta^4)-x^3/(delta^2)+
-               x, ifelse(x >= delta, 16*delta/35, -16*delta/35))
-    }
-    phik <- function(x, N){
-      delta <- 1/N
-      ifelse(x <= delta & x>= -delta, -1/(7*delta^6)*x^7+3/(5*delta^4)*x^5-
-               1/(delta^2)*x^3+x+(16/35)*delta,
-             ifelse(x>= delta, (32/35)*delta, 0))
-    }
-    phiN <- function(x, N){
-      delta <- 1/N
-      phik(x-u[N+1], N)
-    }
-    phii <- function(x, i, N){
-      dela <- 1/N
-      phik(x-u[i+1],N)
-    }
-    
-    A <- matrix(data = 0, ncol = N+2, nrow = n)
-    for(i in 1 : n){ 
-      A[i,1] = 1
-      A[i,2] = phi0(design[i], N)
-      A[i,N+2] = phiN(design[i], N)
-      for(j in 3 : (N+1)){
-        A[i,j] = phii(design[i], j-2, N)
-      }
-    }  
-    
-    fctGamma=function(.theta){
-      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
-      Gamma[1,1] <- k(0, 0, sig, .theta)
-      for(j in 2 : (N+2)){
-        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
-      }
-      for(i in 2 : (N+2)){
-        for(j in 2 : (N+2)){
-          Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
-        }
-      }
-      Gamma <- Gamma + nugget * diag(N+2)
-      return(Gamma)
-    }
-    Gamma=fctGamma(theta)
-    
-  }
+  }    
+# else if(basis.type == "C2"){
+#     phik <- function(x, N){
+#       delta <- 1/N
+#       ifelse(x <= delta & x>= -delta, -2/(3*delta^2)*x^3+1/(5*delta^4)*x^5+x+(8/15)*delta,
+#              ifelse(x>= delta,16*delta/15, 0))
+#     }
+#     phiN <- function(x, N){
+#       delta <- 1/N
+#       phik(x-u[N+1], N)
+#     }
+#     
+#     phii <- function(x, i, N){
+#       delta <- 1/N
+#       phik(x-u[i+1],N)
+#     }
+#     
+#     phi0 <- function(x, N){
+#       delta <- 1/N
+#       ifelse(x <= delta & x >= -delta, x^5/(5*delta^4)-(2*x^3)/(3*delta^2)+x,
+#              ifelse(x <= -delta, -(8/15)*delta, (8/15)*delta))
+#     }
+#     
+#     
+#     A <- matrix(data = 0, ncol = N+2, nrow = n)
+#     for(i in 1 : n){ 
+#       A[i,1] = 1
+#       A[i,2] = phi0(design[i], N)
+#       A[i,N+2] = phiN(design[i], N)
+#       for(j in 3 : (N+1)){
+#         A[i,j] = phii(design[i], j-2, N)
+#       }
+#     }
+#     
+#     fctGamma=function(.theta){
+#       Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+#       Gamma[1,1] <- k(0,0, sig, .theta)
+#       for(j in 2 : (N+2)){
+#         Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
+#       }
+#       for(i in 2 : (N+2)){
+#         Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
+#       }
+#       for(i in 2 : (N+2)){
+#         for(j in 2 : (N+2)){
+#           Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
+#         }
+#       }
+#       Gamma <- Gamma + nugget * diag(N+2)
+#       return(Gamma)
+#     }
+#     Gamma=fctGamma(theta)
+#     
+#   }else if(basis.type == "C3"){
+#     
+#     phi0 <- function(x, N){
+#       delta <- 1/N
+#       ifelse(x >= -delta & x <= delta, -x^7/(7*delta^6)+(3*x^5)/(5*delta^4)-x^3/(delta^2)+
+#                x, ifelse(x >= delta, 16*delta/35, -16*delta/35))
+#     }
+#     phik <- function(x, N){
+#       delta <- 1/N
+#       ifelse(x <= delta & x>= -delta, -1/(7*delta^6)*x^7+3/(5*delta^4)*x^5-
+#                1/(delta^2)*x^3+x+(16/35)*delta,
+#              ifelse(x>= delta, (32/35)*delta, 0))
+#     }
+#     phiN <- function(x, N){
+#       delta <- 1/N
+#       phik(x-u[N+1], N)
+#     }
+#     phii <- function(x, i, N){
+#       dela <- 1/N
+#       phik(x-u[i+1],N)
+#     }
+#     
+#     A <- matrix(data = 0, ncol = N+2, nrow = n)
+#     for(i in 1 : n){ 
+#       A[i,1] = 1
+#       A[i,2] = phi0(design[i], N)
+#       A[i,N+2] = phiN(design[i], N)
+#       for(j in 3 : (N+1)){
+#         A[i,j] = phii(design[i], j-2, N)
+#       }
+#     }  
+#     
+#     fctGamma=function(.theta){
+#       Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+#       Gamma[1,1] <- k(0, 0, sig, .theta)
+#       for(j in 2 : (N+2)){
+#         Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
+#       }
+#       for(i in 2 : (N+2)){
+#         Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
+#       }
+#       for(i in 2 : (N+2)){
+#         for(j in 2 : (N+2)){
+#           Gamma[i, j] = kpp(u[i-1], u[j-1], sig, .theta)
+#         }
+#       }
+#       Gamma <- Gamma + nugget * diag(N+2)
+#       return(Gamma)
+#     }
+#     Gamma=fctGamma(theta)
+#     
+#   }
   else stop ("basis.type",basis.type, "not supported")
   
   

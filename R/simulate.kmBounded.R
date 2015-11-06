@@ -10,7 +10,7 @@
 #' response = c(10, 7, -8, -5, 10, 15)
 #' model = kmBounded1D(design, response, lower = -20, upper = 20, coef.cov=0.2, coef.var=100, basis.size = 50)
 #' x=seq(0,1,,101)
-#' graphics::matplot(x=x,y=simulate_process(object=model, newdata=x, nsim=1000),type='l', col='gray', lty = 1)
+#' graphics::matplot(x=x,y=simulate_process(object=model, newdata=x, nsim=100),type='l', col='gray', lty = 1)
 #' lines(x,constrSpline(object=model)(x), lty=1,col='black')
 #' points(design, response, pch=19)
 #' abline(h=model$call$lower, lty=2)
@@ -49,7 +49,8 @@ simulate_process.kmBounded1D <- function(object, nsim, seed=NULL, newdata){
     while(unif > t){
       Xi_current <- Xi[,j]
       while ((min(Xi_current) < lower) || (max(Xi_current) > upper)){
-        s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
+#         s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
+        s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
         Xi_current <- as.vector(zcentre) + (epsilon %*% s)
       }
       t <- as.numeric(exp(sum((setoil -s) * setoil * c)))      

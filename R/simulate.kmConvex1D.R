@@ -10,7 +10,7 @@
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(10, 5, 9)
 #' model = kmConvex1D(design, response, coef.cov = 0.35)
-#' graphics::matplot(x=seq(0,1,,100),y=simulate_process(object=model, newdata=seq(0,1,,100), nsim=10), type='l', col='gray', lty=1)
+#' graphics::matplot(x=seq(0,1,,100),y=simulate_process(object=model, newdata=seq(0,1,,100), nsim=100), type='l', col='gray', lty=1)
 #' lines(x,constrSpline(object=model)(x), lty=1, col='black')
 #' points(design, response, pch=19)
 
@@ -47,7 +47,8 @@ simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
       Xi_current <- Xi[, j]
       while (min(Xi_current[-(1:2)]) <= 0){
         #s <- rnorm(1, 0, d) ## Dans le Cas o? p = 1 i.e (N = n). 
-        s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
+#         s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
+        s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
         Xi_current <- as.vector(zcentre) + (epsilon %*% s)
       }
       t <- as.numeric(exp(sum((setoil -s) * setoil * c)))  
