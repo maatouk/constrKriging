@@ -35,7 +35,7 @@ log(20*x+1)-meany
 design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 response <- f(design)
 
-model = kmMonotonic1D(design, response, basis.type="C2", covtype="matern5_2",basis.size=40, coef.var=1000, nugget=1e-5)
+model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2",basis.size=40, coef.var=1000, nugget=1e-5)
 
 plot(f)
 
