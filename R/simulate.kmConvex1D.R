@@ -10,7 +10,8 @@
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(10, 5, 9)
 #' model = kmConvex1D(design, response, coef.cov = 0.35)
-#' graphics::matplot(x=seq(0,1,,100),y=simulate_process(object=model, newdata=seq(0,1,,100), nsim=100), type='l', col='gray', lty=1)
+#' x = seq(0,1,,100)
+#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100), type='l', col='gray', lty=1)
 #' lines(x,constrSpline(object=model)(x), lty=1, col='black')
 #' points(design, response, pch=19)
 

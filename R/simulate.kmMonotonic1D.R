@@ -9,7 +9,7 @@
 #' @examples 
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(1, 5, 5.5)
-#' model <- kmMonotonic1D(design, response, covtype="matern5_2", coef.var=1, basis.size=50)
+#' model <- kmMonotonic1D(design, response, covtype="matern5_2", coef.var=1, coef.cov=0.5, basis.size=50)
 #' x=seq(0,1,,100)
 #' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=40),col='gray',type='l',lty=1)
 #' lines(x,constrSpline(object=model)(x), lty=1,col='black')
@@ -29,7 +29,8 @@
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
 #' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=50, coef.cov=2.5, basis.size=50)
-#' graphics::matplot(x=seq(0,1,,100),y=simulate_process(object=model, newdata=seq(0,1,,100), nsim=40),col='gray',type='l',lty=1)
+#' x=seq(0,1,,100)
+#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=40),col='gray',type='l',lty=1)
 #' lines(x,constrSpline(model)(x),lty=2,col='black',lwd=1)
 #' lines(x,f(x))
 #' points(design,response,pch=19)
