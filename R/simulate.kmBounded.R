@@ -49,7 +49,6 @@ simulate_process.kmBounded1D <- function(object, nsim, seed=NULL, newdata){
     while(unif > t){
       Xi_current <- Xi[,j]
       while ((min(Xi_current) < lower) || (max(Xi_current) > upper)){
-#         s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
         s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
         Xi_current <- as.vector(zcentre) + (epsilon %*% s)
       }

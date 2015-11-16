@@ -113,8 +113,7 @@ kmMonotonic1D <- function(design, response,
     
   }
   
-  else if(covtype=="matern5_2"){
-    
+  else if(covtype=='matern5_2'){    
     # Noyau matern 5/2 du processus Y
     k <- function(x, xp, sig, theta){
       sig^2*(1+sqrt(5)*(abs(x-xp))/theta+(5*(x-xp)^2)/(3*theta^2))*exp(-sqrt(5)*(abs(x-xp))/theta)

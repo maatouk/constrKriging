@@ -47,8 +47,6 @@ simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
     while(unif > t ){
       Xi_current <- Xi[, j]
       while (min(Xi_current[-(1:2)]) <= 0){
-        #s <- rnorm(1, 0, d) ## Dans le Cas o? p = 1 i.e (N = n). 
-#         s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
         s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
         Xi_current <- as.vector(zcentre) + (epsilon %*% s)
       }

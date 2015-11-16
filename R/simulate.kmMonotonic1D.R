@@ -59,7 +59,7 @@ simulate_process.kmMonotonic1D <- function(object, nsim, seed=NULL, newdata){
   
   setoil <- t(epsilon) %*% (zetoil - zcentre)
   
-if (object$call$basis.type == 'C0'){
+  if (object$call$basis.type == 'C0'){
     Xi <- matrix(-1, ncol = nsim, nrow = ((ncol(A))))
     for (j in 1 : nsim){
       Xi_current <- Xi[, j]
@@ -68,8 +68,6 @@ if (object$call$basis.type == 'C0'){
       while(unif > t ){
         Xi_current <- Xi[, j]
         while (min(D%*%Xi_current) < 0){
-          #    s <- rnorm(1, setoil, d) ## Dans le Cas o? p = 1 i.e (N = n). 
-#           s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
           s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
           Xi_current <- as.vector(zcentre) + (epsilon %*% s)
         }
@@ -87,7 +85,7 @@ if (object$call$basis.type == 'C0'){
       while(unif > t ){
         while (min(Xi_current[-1]) < 0){
           #s <- rnorm(1, 0, d) ## Dans le Cas o? p = 1 i.e (N = n). 
-#           s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
+          #           s <- matrix(mvrnorm(1, as.vector(setoil), diag(d)), ncol = 1)
           s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
           Xi_current <- as.vector(zcentre) + (epsilon %*% s)
         }

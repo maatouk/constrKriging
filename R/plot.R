@@ -12,15 +12,18 @@
 #' @export
 
 #' @examples 
+#' ## Convex Example
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(10, 5, 9)
 #' model = kmConvex1D(design, response)
 #' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=10)
 #' points(design,response,pch=19)
+
+#' ## Monotone Example
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(1, 5, 9)
-#' model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2")
-#' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=10)
+#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.cov=1, coef.var=100)
+#' plot(object=model, median=TRUE, spline=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
 #' points(design,response,pch=19)
 
 #' ## Golchi Example
@@ -36,17 +39,16 @@
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
 #' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=100, coef.cov=2, basis.size=50)
+#' plot(object=model, median=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
+#' points(design,response,pch=19)
+
+#' ## Bounded Example
+#' design <- c(0.1, 0.3, 0.5, 0.9)
+#' response <- c(7, -8, 9, 15)
+#' model = kmBounded1D(design, response, lower=-10, upper = 20, coef.cov=0.2, basis.size=50)
 #' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
-#' x=seq(0,1,,100)
-#' lines(x,constrSpline(model)(x),lty=2,col='black',lwd=1)
-#' lines(x,f(x))
 #' points(design,response,pch=19)
 
-
-## Bounded Example 
-#' model = kmBounded1D(design=c(0.1, 0.3, 0.5, 0.9), response=c(7, -8, 9, 15), lower=-10, upper = 18, coef.cov=1)
-#' plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=40)
-#' points(design,response,pch=19)
 plotCK <- function(x=seq(f=min(object$call$design),t=max(object$call$design),l=100), object, spline=TRUE, nsim=100, median=TRUE, mean=FALSE, minmax=FALSE, quantiles=TRUE, col='black',add=F){
   if (!isTRUE(add))
     graphics::plot(x=range(object$call$design), y=range(object$call$response), type='n', xlab='design', ylab='response')
