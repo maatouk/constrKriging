@@ -35,27 +35,27 @@ log(20*x+1)-meany
 design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 response <- f(design)
 
-model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2",basis.size=50, coef.var=1000, coef.cov=1.5, nugget=1e-5)
+model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2",basis.size=50, coef.var=1000, coef.cov=1.15, nugget=1e-5)
 
 plot(f)
 
-plot(object=model, median=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100, add=T)
+plot(object=model, median=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100, add=T)
 
 points(design,response,pch=19)
 
 legend(0.3,-1.1, c("true function","constrained mode","constrained 95% intervals"),
 col = c('black','gray','gray'), text.col = "black",
-lty = c(1, 2,1), pch=c(NA_integer_, NA_integer_),
+lty = c(1, 1,1), pch=c(NA_integer_, NA_integer_),
 lwd = c(2, 2,10), text.font=1,box.lty=0, cex=1.2)
 ```
 
-![](Golchi_example.png)
+![](Rplot.png)
 
 
 References
 ---------
 
-Maatouk, H. and Bay, X. (2014a). A New Rejection Sampling Method for Truncated Multivariate Gaussian Random Variables Restricted to Convex Sets. [hal-01063978](https://hal.archives-ouvertes.fr/hal-01063978).
+Maatouk, H. and Bay, X. (2014a). A New Rejection Sampling Method for Truncated Multivariate Gaussian Random Variables Restricted to Convex Sets. Accepted for publication to Eleventh International Conference on Monte Carlo and Quasi-Monte Carlo Methods in Scientific Computing, April 6 - 11, 2014, KU Leuven, Belgium. Preprint http://hal-emse.ccsd.cnrs.fr/FAYOL-ENSMSE/hal-01063978v1.
 
 Maatouk, H. and Bay, X. (2014b). Gaussian Process Emulators for Computer Experiments with Inequality Constraints. [hal-01096751](https://hal.archives-ouvertes.fr/hal-01096751).
 
