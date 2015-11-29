@@ -10,7 +10,7 @@
 #' response = c(10, 7, -8, -5, 10, 15)
 #' model = kmBounded1D(design, response, lower = -20, upper = 20, coef.cov=0.2, coef.var=100, basis.size = 50)
 #' x = seq(0,1,,101)
-#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100),type='l', col='gray', lty = 1)
+#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100),type='l', col='gray', lty = 1, ylab = "response")
 #' lines(x,constrSpline(object=model)(x), lty=1,col='black')
 #' points(design, response, pch=19)
 #' abline(h=model$call$lower, lty=2)

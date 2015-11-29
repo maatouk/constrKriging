@@ -9,7 +9,9 @@
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(1, 5, 9)
 #' model = kmMonotonic1D(design, response)
-#' graphics::plot(x=seq(0,1,,100),y=predict(object=model, newdata=seq(0,1,,100), nsim=1)[,'Median'])
+#' graphics::plot(x=seq(0,1,,100),y=predict(object=model, newdata=seq(0,1,,100), nsim=1)[,'Median'], type='l')
+#' points(design, response, pch=19)
+
 predictCK <- function(object, newdata, nsim = 100){
   y <- simulate_process(object, nsim, seed=1, newdata)
   return(t(sapply(apply(y, ecdf, MARGIN = 1), summary)))

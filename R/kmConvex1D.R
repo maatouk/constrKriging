@@ -11,6 +11,7 @@
 #' @examples
 #' kmConvex1D(design=c(0.1, 0.5, 0.9), response=c(10, 5, 9), coef.cov = 0.3)
 #' kmConvex1D(design=c(0.1, 0.5,.7, 0.9), response=c(10, 5,7, 9), coef.cov = 0.3)
+
 kmConvex1D <- function(design, response, 
                        basis.size = dim(design)[1]+2+10, 
                        covtype = "gauss",
@@ -42,10 +43,10 @@ kmConvex1D <- function(design, response,
   #     return(model)
   #   }
   
-  n <- nrow(design) # nb de points ? interpoler
-  N <- basis.size
-  p <- (N + 2) - n
-  u <- seq(0, 1, by = 1/N) # vecteur de discrétisation
+  n <- nrow(design)  # number of design points 
+  N <- basis.size    # discretization size
+  p <- (N + 2) - n   # degree of freedom
+  u <- seq(0, 1, by = 1/N)  # discretization vector 
   delta <- 1/N
   
   sig <- sqrt(coef.var)
@@ -53,46 +54,43 @@ kmConvex1D <- function(design, response,
   
   
   if(covtype=='gauss'){
-    # Noyau gaussien du processus Y
+    # Gaussian covariance kernel of the GP Y
     k <- function(x, xp, sig, theta){
       (sig^2)*exp(-(x-xp)^2/(2*theta^2))
     }
     
-    # D?riv?e % x
+    # first partial derivative
     kp1 <- function(x, xp, sig, theta){
       -(x-xp)/(theta^2)*k(x,xp, sig, theta)
     }
     
-    # D?riv?e % xp
+    # second partial derivative
     kp2 <- function(x, xp, sig, theta){
       -kp1(x,xp, sig, theta)
     }
     
     
-    # Noyau du processus d?riv?e (D?riv?e % x et xp (ou l'inverse))
-    
+    # derivation of the Gaussian kernel with respect to the 1er and second variable
     kpp <- function(x, xp, sig, theta){
       (1/(theta^2))*k(x,xp, sig, theta)*(1-(x-xp)^2/(theta^2))
     }
     
-    # D?riv?e 2 fois % x ou 2 fois % xp
+    # two times derivative with respect to the first or the second variable
     kpp12 <- function(x,xp, sig, theta){
       -kpp(x,xp, sig, theta)
     }
     
-    ## Noyau du processus d?riv?e seconde (2 fois % x et 2 fois % xp)
-    
+    ## two times derivative with respect to the first and the second variable
     k2pp <- function(x, xp, sig, theta){
       exp(-(x-xp)^2/(2*theta^2))*((sig^2*(x-xp)^4)/theta^8-(6*sig^2*(x-xp)^2/theta^6)+3*(sig^2)/theta^4)
     }
     
-    # D?riv?e 3 fois dont 2 fois % x et une fois % xp
+    # third times derivative (two times with respect to the first variable and one time to the second one)
     k3pp1 <- function(x, xp, sig, theta){
       exp(-(x-xp)^2/(2*theta^2))*(sig^2*(x-xp))/(theta^4)*(-3+(x-xp)^2/theta^2)
     }
     
-    # D?riv?e 3 fois dont 2 fois % xp et une fois % x
-    
+    # third times derivative (one time with respect to the first variable and two times to the second one)
     k3pp2 <- function(x, xp, sig, theta){
       exp(-(x-xp)^2/(2*theta^2))*(sig^2*(x-xp))/(theta^4)*(+3-(x-xp)^2/theta^2)
     }
@@ -105,12 +103,7 @@ kmConvex1D <- function(design, response,
   
   
   
-  
-  
-  
-  
-  
-  fctGamma=function(.theta){
+    fctGamma=function(.theta){
     Gamma <- matrix(data = 0, nrow = N+3, ncol = N+3)
     Gamma[1,1] <- k(0,0, sig, .theta)
     Gamma[1,2] <- kp2(0,0, sig, .theta)

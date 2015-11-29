@@ -50,39 +50,37 @@ kmBounded1D <- function(design, response,
   #     return(model)
   #   }
   
-  n <- nrow(design) # nb de points ? interpoler
-  N <- basis.size
-  p <- (N + 2) - n
-  u <- seq(0, 1, by = 1/N) # vecteur de discrétisation
+  n <- nrow(design) # number of design points
+  N <- basis.size # discretization size
+  p <- (N + 1) - n # degree of freedom
+  u <- seq(0, 1, by = 1/N) # discretization vector
   
   sig <- sqrt(coef.var)
   theta <- coef.cov
   
   
   if(covtype=='gauss'){
-    # Noyau gaussien du processus Y
+    # Gaussian covariance kernel of the Original GP Y
     k <- function(x, xp, sig, theta){
       (sig^2)*exp(-(x-xp)^2/(2*theta^2))
     }
   }else if (covtype=='matern3_2'){
-    # Noyau matern 3/2 du processus Y
+    # Matern 3/2 covariance kernel of Y
     k <- function(x, xp, sig, theta){
       (sig^2)*(1+(sqrt(3)*abs(x-xp)/theta))*exp(-sqrt(3)*abs(x-xp)/theta)
     }
   }
   else if(covtype=="matern5_2"){
-    
-    # Noyau matern 5/2 du processus Y
+    # Matern 5/2 covariance kernel of Y
     k <- function(x, xp, sig, theta){
       sig^2*(1+sqrt(5)*(abs(x-xp))/theta+(5*(x-xp)^2)/(3*theta^2))*exp(-sqrt(5)*(abs(x-xp))/theta)
     }
   }
   
-  
   else stop('covtype', covtype, 'not supported')
   
   
-  
+  # Definition of basis functions  
   phi <- function(x){
     ifelse(x >= -1 & x <= 1, 1-abs(x), 0)
   }
@@ -152,7 +150,7 @@ Phi1D.kmBounded1D <- function(model, newdata){
   v <- matrix(0, nrow = length(x), ncol = N + 1)
   v[,1] <- model$phi0(x, N = N)
   v[,N+1] <- model$phiN(x, N = N)
-  for(j in 2 : (N)){
+  for(j in 2 : N){
     v[,j] = model$phii(x, j-1, N)
   }
   
