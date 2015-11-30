@@ -101,7 +101,7 @@ kmBounded1D <- function(design, response,
   for(i in 1 : n){ 
     A[i,1] = phi0(design[i,1], N)
     A[i,N+1] = phiN(design[i,1], N)
-    for(j in 2 : (N)){
+    for(j in 2 : N){
       A[i,j] = phii(design[i,1], j-1, N)
     }
   }
@@ -123,11 +123,11 @@ kmBounded1D <- function(design, response,
   invGamma1 <- chol(Gamma)
   invGamma <- chol2inv(invGamma1)
   
-  Amat2 <- diag((N+1))
+  Amat2 <- diag(N+1)
   Amat1 <- rbind(A,Amat2)
   Amat <- rbind(Amat1,-Amat2)
   
-  zetoil <- solve.QP(invGamma,dvec=rep(0,(N+1)),Amat=t(Amat),bvec=c(response,rep(lower,(N+1)),rep(-upper,(N+1))),meq=n)$solution
+  zetoil <- solve.QP(invGamma,dvec=rep(0,N+1),Amat=t(Amat),bvec=c(response,rep(lower,N+1),rep(-upper,N+1)),meq=n)$solution
   
   return(structure(
     list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D, fctGamma=fctGamma,
@@ -147,7 +147,7 @@ Phi1D.kmBounded1D <- function(model, newdata){
   N <- model$call$basis.size  
   x <- newdata
   
-  v <- matrix(0, nrow = length(x), ncol = N + 1)
+  v <- matrix(0, nrow = length(x), ncol = N+1)
   v[,1] <- model$phi0(x, N = N)
   v[,N+1] <- model$phiN(x, N = N)
   for(j in 2 : N){
