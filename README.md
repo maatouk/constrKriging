@@ -57,8 +57,8 @@ References
 
 Maatouk, H. and Bay, X. (2014a). A New Rejection Sampling Method for Truncated Multivariate Gaussian Random Variables Restricted to Convex Sets. Accepted for publication to Eleventh International Conference on Monte Carlo and Quasi-Monte Carlo Methods in Scientific Computing, April 6 - 11, 2014, KU Leuven, Belgium. Preprint http://hal-emse.ccsd.cnrs.fr/FAYOL-ENSMSE/hal-01063978v1.
 
-Maatouk, H. and Bay, X. (2014b). Gaussian Process Emulators for Computer Experiments with Inequality Constraints. [hal-01096751](https://hal.archives-ouvertes.fr/hal-01096751).
+Maatouk, H. and Bay, X. (2014b). Gaussian Process Emulators for Computer Experiments with Inequality Constraints. In revision, preprint https://hal.archives-ouvertes.fr/hal-01096751.
 
-Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations of Hyper-Parameters of Gaussian Processes with Inequality Constraints. [hal-01153960](https://hal.archives-ouvertes.fr/hal-01153960).
+Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations of Hyper-Parameters of Gaussian Processes with Inequality Constraints. Procedia Environmental Sciences, 27 :38 – 44, 2015. Spatial Statistics conference 2015.
 
 Bay, X., Grammont, L., and Maatouk, H. (2015). A New Method for Smothing and Interpolating with Inequality Constraints. [hal-01136466](https://hal.archives-ouvertes.fr/hal-01136466).
