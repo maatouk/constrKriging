@@ -46,7 +46,7 @@ simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
     t <- 0
     while(unif > t ){
       Xi_current <- Xi[, j]
-      while (min(Xi_current[-(1:2)]) <= 0){
+      while (min(Xi_current[-(1:2)]) < 0){
         s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
         Xi_current <- as.vector(zcentre) + (epsilon %*% s)
       }

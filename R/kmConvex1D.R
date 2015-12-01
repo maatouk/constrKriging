@@ -19,7 +19,7 @@ kmConvex1D <- function(design, response,
                        coef.var = var(response),
                        nugget = 1e-7*sd(response)) {
   
-  if (!is.matrix(design)) design=matrix(design,ncol=1)
+  if (!is.matrix(design)) design=matrix(design, ncol = 1)
   
   #   if (coef.cov=="LOO") {
   #     object=kmConvex1D(design, response, 
@@ -45,7 +45,7 @@ kmConvex1D <- function(design, response,
   
   n <- nrow(design)  # number of design points 
   N <- basis.size    # discretization size
-  p <- (N + 2) - n   # degree of freedom
+  p <- (N + 3) - n   # degree of freedom
   u <- seq(0, 1, by = 1/N)  # discretization vector 
   delta <- 1/N
   
@@ -103,7 +103,7 @@ kmConvex1D <- function(design, response,
   
   
   
-    fctGamma=function(.theta){
+  fctGamma=function(.theta){
     Gamma <- matrix(data = 0, nrow = N+3, ncol = N+3)
     Gamma[1,1] <- k(0,0, sig, .theta)
     Gamma[1,2] <- kp2(0,0, sig, .theta)
