@@ -14,7 +14,7 @@
 #' model = kmBounded1D(design=c(0.1, 0.3, 0.5, 0.9), response=c(7, -8, 9, 15), lower=-10, upper = 18, coef.cov=1)
 kmBounded1D <- function(design, response, 
                         basis.size = dim(design)[1]+2+10, 
-                        covtype = "gauss",
+                        covtype = "matern5_2",
                         coef.cov = 0.5*(max(design)-min(design)), # "LOO"
                         coef.var = var(response),
                         lower = min(response)-(max(response)-min(response))*.1,
@@ -62,12 +62,12 @@ kmBounded1D <- function(design, response,
   if(covtype=='gauss'){
     # Gaussian covariance kernel of the Original GP Y
     k <- function(x, xp, sig, theta){
-      (sig^2)*exp(-(x-xp)^2/(2*theta^2))
+      sig^2*exp(-(x-xp)^2/(2*theta^2))
     }
   }else if (covtype=='matern3_2'){
     # Matern 3/2 covariance kernel of Y
     k <- function(x, xp, sig, theta){
-      (sig^2)*(1+(sqrt(3)*abs(x-xp)/theta))*exp(-sqrt(3)*abs(x-xp)/theta)
+      sig^2*(1+(sqrt(3)*abs(x-xp)/theta))*exp(-sqrt(3)*abs(x-xp)/theta)
     }
   }
   else if(covtype=="matern5_2"){

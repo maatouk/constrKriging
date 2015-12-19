@@ -39,7 +39,7 @@ model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2",bas
 
 plot(f)
 
-plot(object=model, median=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100, add=T)
+plot(object=model, spline=TRUE, quantiles=TRUE, col='gray',nsim=100, add=T)
 
 points(design,response,pch=19)
 
