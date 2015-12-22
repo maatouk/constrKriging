@@ -54,7 +54,7 @@ plotCK <- function(x=seq(f=min(object$call$design),t=max(object$call$design),l=1
     graphics::plot(x=range(object$call$design), y=range(object$call$response), type='n', xlab='design', ylab='response')
   
   if (isTRUE(spline))
-    lines(x,constrSpline(object)(x),lty=1,col=col)
+    lines(x,constrSpline(object)(x),lty=2,col=col)
   
   if (isTRUE(median) || isTRUE(mean) || isTRUE(quantiles) || isTRUE(minmax)) {
     pred <- predict(object, newdata=x, nsim )

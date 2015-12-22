@@ -35,18 +35,18 @@ log(20*x+1)-meany
 design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 response <- f(design)
 
-model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2",basis.size=50, coef.var=1000, coef.cov=1.15, nugget=1e-5)
+model = kmMonotonic1D(design, response, covtype="matern5_2",basis.size=50, coef.var=1000, coef.cov=2.5, nugget=1e-7)
 
-plot(f)
+plot(f, ylab='response', xlab='design')
 
 plot(object=model, spline=TRUE, quantiles=TRUE, col='gray',nsim=100, add=T)
 
 points(design,response,pch=19)
 
-legend(0.3,-1.1, c("true function","constrained mode","constrained 95% intervals"),
+legend(0.2,-0.5, c("true function","constrained mode","constrained 95% intervals"),
 col = c('black','gray','gray'), text.col = "black",
-lty = c(1, 1,1), pch=c(NA_integer_, NA_integer_),
-lwd = c(2, 2,10), text.font=1,box.lty=0, cex=1.2)
+lty = c(1, 2, 1), pch=c(NA_integer_, NA_integer_),
+lwd = c(2, 2, 10), text.font=1,box.lty=0)
 ```
 
 ![](Rplot.png)
