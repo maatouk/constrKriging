@@ -1,6 +1,6 @@
 # Kriging with inequality constraints for computer experiments
 
-This repository contains an R Package to build, simulate, predict kriging model using inequality constraints like monotonicity, convexity and boundaries. Kriging model is similar to DiceKriging.
+This repository contains an R Package to build, simulate, predict kriging model using inequality constraints such as boundedness, monotonicity and convexity. Kriging model is similar to DiceKriging.
 
 Installation
 ------------

@@ -1,5 +1,5 @@
 
-#' @title Kriging model with bounds constraints
+#' @title Kriging model with boundedness constraints
 #' @param design 1-column matrix of the design of experiments
 #' @param response a vector containing the output values given by the real function at the design points
 #' @param basis.size a value represents the number of the basis functions (descritization of 1D input set)
