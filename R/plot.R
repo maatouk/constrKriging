@@ -21,7 +21,7 @@
 
 #' ## Monotone Example
 #' design = c(0.1, 0.5, 0.9)
-#' response = c(1, 5, 9)
+#' response = c(1, 7, 9)
 #' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.cov=1, coef.var=100)
 #' plot(object=model, spline=TRUE, median=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
 #' points(design,response,pch=19)
@@ -45,7 +45,7 @@
 #' ## Bounded Example
 #' design <- c(0.1, 0.3, 0.5, 0.9)
 #' response <- c(7, -8, 9, 15)
-#' model = kmBounded1D(design, response, lower=-10, upper = 18, coef.cov=0.2, basis.size=50)
+#' model = kmBounded1D(design, response, lower=-10, upper = 15, coef.cov=0.2, basis.size=50)
 #' plot(object=model, median=FALSE, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
 #' points(design,response,pch=19)
 

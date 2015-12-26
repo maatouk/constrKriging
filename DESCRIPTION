@@ -5,7 +5,7 @@ Version: 0.1.1
 Date: 2015-02-19
 Author: Hassan Maatouk, Yann Richet
 Maintainer: Hassan Maatouk <hassan.maatouk@mines-stetienne.fr>
-Description: Build, simulate, predict kriging model using inequality constraints like monotonicity, convexity and boundaries. Kriging model is similar to DiceKriging.
+Description: Build, simulate, predict kriging model using inequality constraints such as boundedness, monotonicity and convexity. Kriging model is similar to DiceKriging.
 License: GPL-3
 Depends: quadprog
 Packaged: 2015-02-20 16:01:36 UTC; Hassan Maatouk, richet-yan
