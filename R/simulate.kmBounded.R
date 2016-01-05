@@ -4,7 +4,7 @@
 #' @param nsim the number of response vectors to simulate
 #' @param seed optional random seed
 #' @import MASS
-#' 
+#' @import solve.QP
 #' @examples 
 #' design=c(0, 0.1, 0.2, 0.42, 0.5, 0.9)
 #' response = c(10, 7, -8, -5, 10, 15)

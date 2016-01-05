@@ -7,7 +7,8 @@
 #' @param coef.cov a value corresponding to the length theta hyper-parameters of covariance function
 #' @param coef.var a value specifying the variance parameter
 #' @param nugget an optimal value used as nugget effect to solve the numerical inverse matrix problem
-#' @import quadrpog
+#' @import MASS
+#' @import solve.QP
 #' @examples
 #' kmConvex1D(design=c(0.1, 0.5, 0.9), response=c(10, 5, 9), coef.cov = 0.3)
 #' kmConvex1D(design=c(0.1, 0.5,.7, 0.9), response=c(10, 5,7, 9), coef.cov = 0.3)

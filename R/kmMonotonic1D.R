@@ -40,29 +40,29 @@ kmMonotonic1D <- function(design, response,
   
   if (!is.matrix(design)) design=matrix(design,ncol=1)
   
-#   if (coef.cov=="LOO") {
-#     object=kmMonotonic1D(design, response, 
-#                          basis.size, 
-#                          covtype,
-#                          basis.type, 
-#                          coef.cov = 0.5*(max(design)-min(design)),
-#                          coef.var,
-#                          nugget)
-#     
-#     theta=coef.cov_LOO(object)
-#     
-#     model = NULL
-#     while(is.null(model)) # auto raise nugget if needed
-#       try(model <- kmMonotonic1D(design, response, 
-#                                  basis.size, 
-#                                  covtype ,
-#                                  basis.type,
-#                                  coef.cov = theta,
-#                                  coef.var,
-#                                  nugget=nugget*10))
-#     
-#     return(model)
-#   }
+  #   if (coef.cov=="LOO") {
+  #     object=kmMonotonic1D(design, response, 
+  #                          basis.size, 
+  #                          covtype,
+  #                          basis.type, 
+  #                          coef.cov = 0.5*(max(design)-min(design)),
+  #                          coef.var,
+  #                          nugget)
+  #     
+  #     theta=coef.cov_LOO(object)
+  #     
+  #     model = NULL
+  #     while(is.null(model)) # auto raise nugget if needed
+  #       try(model <- kmMonotonic1D(design, response, 
+  #                                  basis.size, 
+  #                                  covtype ,
+  #                                  basis.type,
+  #                                  coef.cov = theta,
+  #                                  coef.var,
+  #                                  nugget=nugget*10))
+  #     
+  #     return(model)
+  #   }
   
   
   n <- nrow(design) # number of design points
@@ -138,36 +138,33 @@ kmMonotonic1D <- function(design, response,
   else stop('covtype', covtype, 'not supported')
   
   
-## basis functions (hat functions)  
+  ## basis functions (hat functions)  
   if(basis.type=="C0"){
     
     phi <- function(x){
       ifelse(x >= -1 & x <= 1, 1-abs(x), 0)
     }
-    
     phi0 <- function(x, N){
       phi(x*N)
     }
-    
     phiN <- function(x, N){
       phi((x-u[N+1])*N)
     }
-    
     phii <- function(x, i, N){
       phi((x - u[i+1])*N)
     }
     
-    A <- matrix(data = 0, ncol = N+1, nrow = n)
+    A <- matrix(data = NA, ncol = N+1, nrow = n)
     for(i in 1 : n){ 
       A[i,1] = phi0(design[i,1], N)
       A[i,N+1] = phiN(design[i,1], N)
-      for(j in 2 : (N)){
+      for(j in 2 : N){
         A[i,j] = phii(design[i,1], j-1, N)
       }
     }
     
     fctGamma=function(.theta){
-      Gamma <- matrix(data = 0, nrow = N+1, ncol = N+1)
+      Gamma <- matrix(data = NA, nrow = N+1, ncol = N+1)
       for(i in 1 : (N+1)){
         for(j in 1 : (N+1)){
           Gamma[i, j] = k(u[i], u[j], sig , .theta)
@@ -177,8 +174,8 @@ kmMonotonic1D <- function(design, response,
       return(Gamma)
     }
     Gamma=fctGamma(theta)
-
-
+    
+    
   }else if (basis.type == "C1"){
     h <- function(x){
       ifelse(x >= -1 & x <= 1, 1-abs(x), 0)
@@ -313,11 +310,11 @@ Phi1D.kmMonotonic1D <- function(model, newdata){
   }else {
     
     v <- matrix(NA, nrow = length(x), ncol = N + 2)
-    v[,1] <- 1
-    v[,2] <- model$phi0(x, N = N)
-    v[,N+2] <- model$phiN(x, N = N)
+    v[, 1] <- 1
+    v[, 2] <- model$phi0(x, N = N)
+    v[, N+2] <- model$phiN(x, N = N)
     for(j in 3 : (N+1)){
-      v[,j] = model$phii(x, j-2, N)
+      v[, j] = model$phii(x, j-2, N)
     }
   }
   return(v)

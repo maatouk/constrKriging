@@ -4,8 +4,8 @@
 #' @param nsim the number of response vectors to simulate
 #' @param seed optional random seed
 #' @import MASS
+#' @import solve.QP
 
-#' simulate(object=kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9)),newdata=seq(f=0,t=1,l=100),nsim=50)
 #' @examples 
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(1, 5, 5.5)
