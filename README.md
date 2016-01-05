@@ -61,4 +61,4 @@ Maatouk, H. and Bay, X. (2014b). Gaussian Process Emulators for Computer Experim
 
 Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations of Hyper-Parameters of Gaussian Processes with Inequality Constraints. Procedia Environmental Sciences, 27 :38 – 44, 2015. Spatial Statistics conference 2015.
 
-Bay, X., Grammont, L., and Maatouk, H. (2015). A New Method for Smothing and Interpolating with Inequality Constraints. Submitted, preprint https://hal.archives-ouvertes.fr/hal-01136466.
+Bay, X., Grammont, L., and Maatouk, H. (2015). A New Method For Interpolating In A Convex Subset Of A Hilbert Space. Submitted, preprint https://hal.archives-ouvertes.fr/hal-01136466.

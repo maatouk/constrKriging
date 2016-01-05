@@ -60,18 +60,18 @@ kmBounded1D <- function(design, response,
   
   
   if(covtype=='gauss'){
-    # Gaussian covariance kernel of the Original GP Y
+    # Gaussian covariance kernel 
     k <- function(x, xp, sig, theta){
       sig^2*exp(-(x-xp)^2/(2*theta^2))
     }
   }else if (covtype=='matern3_2'){
-    # Matern 3/2 covariance kernel of Y
+    # Matern 3/2 covariance kernel
     k <- function(x, xp, sig, theta){
       sig^2*(1+(sqrt(3)*abs(x-xp)/theta))*exp(-sqrt(3)*abs(x-xp)/theta)
     }
   }
   else if(covtype=="matern5_2"){
-    # Matern 5/2 covariance kernel of Y
+    # Matern 5/2 covariance kernel
     k <- function(x, xp, sig, theta){
       sig^2*(1+sqrt(5)*(abs(x-xp))/theta+(5*(x-xp)^2)/(3*theta^2))*exp(-sqrt(5)*(abs(x-xp))/theta)
     }
@@ -84,20 +84,17 @@ kmBounded1D <- function(design, response,
   phi <- function(x){
     ifelse(x >= -1 & x <= 1, 1-abs(x), 0)
   }
-  
   phi0 <- function(x, N){
     phi(x*N)
   }
-  
   phiN <- function(x, N){
     phi((x-u[N+1])*N)
   }
-  
   phii <- function(x, i, N){
     phi((x - u[i+1])*N)
   }
   
-  A <- matrix(data = 0, ncol = N+1, nrow = n)
+  A <- matrix(data = NA, ncol = N+1, nrow = n)
   for(i in 1 : n){ 
     A[i,1] = phi0(design[i,1], N)
     A[i,N+1] = phiN(design[i,1], N)
@@ -107,7 +104,7 @@ kmBounded1D <- function(design, response,
   }
   
   fctGamma=function(.theta){
-    Gamma <- matrix(data = 0, nrow = N+1, ncol = N+1)
+    Gamma <- matrix(data = NA, nrow = N+1, ncol = N+1)
     for(i in 1 : (N+1)){
       for(j in 1 : (N+1)){
         Gamma[i, j] = k(u[i], u[j], sig , .theta)

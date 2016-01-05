@@ -32,11 +32,7 @@ simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
   epsilon <- B %*% epsilontilde[, 1 : p]
   c <- eigen(t(B) %*% chol2inv(chol(Gamma)) %*% B)$values[1:p]
   d <- 1/c[1 : p]                     
-  
-  
   zcentre <- Gamma %*% t(A) %*% solve(A %*% Gamma %*% t(A)) %*% response
-  
-  
   setoil <- t(epsilon) %*% (zetoil - zcentre)
   
   Xi <- matrix(-1, ncol = nsim, nrow = (N+3))

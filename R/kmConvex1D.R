@@ -54,28 +54,27 @@ kmConvex1D <- function(design, response,
   
   
   if(covtype=='gauss'){
-    # Gaussian covariance kernel of the GP Y
+    ## Gaussian covariance kernel 
     k <- function(x, xp, sig, theta){
       (sig^2)*exp(-(x-xp)^2/(2*theta^2))
     }
     
-    # first partial derivative
+    ## first partial derivative
     kp1 <- function(x, xp, sig, theta){
       -(x-xp)/(theta^2)*k(x,xp, sig, theta)
     }
     
-    # second partial derivative
+    ## second partial derivative
     kp2 <- function(x, xp, sig, theta){
       -kp1(x,xp, sig, theta)
     }
     
-    
-    # derivation of the Gaussian kernel with respect to the 1er and second variable
+    ## derivation of the Gaussian kernel with respect to the 1er and second variable
     kpp <- function(x, xp, sig, theta){
       (1/(theta^2))*k(x,xp, sig, theta)*(1-(x-xp)^2/(theta^2))
     }
     
-    # two times derivative with respect to the first or the second variable
+    ## two times derivative with respect to the first or the second variable
     kpp12 <- function(x,xp, sig, theta){
       -kpp(x,xp, sig, theta)
     }
@@ -85,26 +84,23 @@ kmConvex1D <- function(design, response,
       exp(-(x-xp)^2/(2*theta^2))*((sig^2*(x-xp)^4)/theta^8-(6*sig^2*(x-xp)^2/theta^6)+3*(sig^2)/theta^4)
     }
     
-    # third times derivative (two times with respect to the first variable and one time to the second one)
+    ## third times derivative (two times with respect to the first variable and one time to the second one)
     k3pp1 <- function(x, xp, sig, theta){
       exp(-(x-xp)^2/(2*theta^2))*(sig^2*(x-xp))/(theta^4)*(-3+(x-xp)^2/theta^2)
     }
     
-    # third times derivative (one time with respect to the first variable and two times to the second one)
+    ## third times derivative (one time with respect to the first variable and two times to the second one)
     k3pp2 <- function(x, xp, sig, theta){
       exp(-(x-xp)^2/(2*theta^2))*(sig^2*(x-xp))/(theta^4)*(+3-(x-xp)^2/theta^2)
     }
-    
-    
   }
   
   
   else stop('covtype', covtype, 'not supported')
   
   
-  
   fctGamma=function(.theta){
-    Gamma <- matrix(data = 0, nrow = N+3, ncol = N+3)
+    Gamma <- matrix(data = NA, nrow = N+3, ncol = N+3)
     Gamma[1,1] <- k(0,0, sig, .theta)
     Gamma[1,2] <- kp2(0,0, sig, .theta)
     Gamma[2,1] <- kp1(0,0, sig, .theta)
@@ -133,21 +129,18 @@ kmConvex1D <- function(design, response,
                                                      ifelse(x >= 0 & x <= delta, (delta-x)^3/(6*delta)+delta*x/2-delta^2/6, delta*x/2-1/6*delta^2)))
   }
   
-  
   phii <- function(x, i, N){
     ifelse(x <= u[i], 0, ifelse(x >= u[i] & x <= u[i+1], (delta+x-u[i+1])^3/(6*delta),
                                 ifelse(x >= u[i+1] & x <= u[i+2], delta*(x-u[i+1])+(delta-x+u[i+1])^3/(6*delta),
                                        delta^2+delta*(x-u[i+2]))))
   }
   
-  
   phiN <- function(x, N){
     phii(x-delta, N-1)
   }
   
   
-  
-  A <- matrix(data = 0, ncol = N+3, nrow = n)
+  A <- matrix(data = NA, ncol = N+3, nrow = n)
   for(i in 1 : n){ 
     A[i,1] = 1
     A[i,2] = design[i,1]
@@ -183,7 +176,7 @@ Phi1D.kmConvex1D <- function(model, newdata){
   N <- model$call$basis.size  
   x <- newdata
   
-  v <- matrix(0, nrow = length(x), ncol = N+3)
+  v <- matrix(NA, nrow = length(x), ncol = N+3)
   v[,1] <- 1
   v[,2] <- x
   v[,3] <- model$phi0(x, N = N)

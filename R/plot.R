@@ -13,9 +13,9 @@
 
 #' @examples 
 #' ## Convex Example
-#' design = c(0.1, 0.5, 0.9)
-#' response = c(10, 5, 9)
-#' model = kmConvex1D(design, response)
+#' design = c(0, 0.05, 0.2, 0.5, 0.85, 0.95)
+#' response = c(20, 15, 3, -5, 7, 15)
+#' model = kmConvex1D(design, response, coef.cov=0.3, coef.var=100)
 #' plot(object=model, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=10)
 #' points(design,response,pch=19)
 
@@ -38,15 +38,18 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=100, coef.cov=2, basis.size=50)
+#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=50, coef.cov=2.5, basis.size=50)
 #' plot(object=model, median=FALSE, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
+#' curve(f, add=TRUE)
 #' points(design,response,pch=19)
 
-#' ## Bounded Example
+#' ## Boundedness Example
 #' design <- c(0.1, 0.3, 0.5, 0.9)
 #' response <- c(7, -8, 9, 15)
-#' model = kmBounded1D(design, response, lower=-10, upper = 15, coef.cov=0.2, basis.size=50)
+#' model = kmBounded1D(design, response, lower=-10, upper = 15, coef.cov=0.3, coef.var=15, basis.size=50)
 #' plot(object=model, median=FALSE, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
+#' abline(h=15,lty=2)
+#' abline(h=-10, lty=2)
 #' points(design,response,pch=19)
 
 plotCK <- function(x=seq(f=min(object$call$design),t=max(object$call$design),l=100), object, spline=FALSE, nsim=100, median=FALSE, mean=FALSE, minmax=FALSE, quantiles=TRUE, col='black',add=F){

@@ -219,7 +219,7 @@ kmMonotonic1D <- function(design, response,
     }
     
     fctGamma=function(.theta){
-      Gamma <- matrix(data = 0, nrow = N+2, ncol = N+2)
+      Gamma <- matrix(data = NA, nrow = N+2, ncol = N+2)
       Gamma[1,1] <- k(0,0, sig, .theta)
       for(j in 2 : (N+2)){
         Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
@@ -237,7 +237,7 @@ kmMonotonic1D <- function(design, response,
     }
     Gamma=fctGamma(theta)
     
-    A <- matrix(data = 0, ncol = N+2, nrow = n)
+    A <- matrix(data = NA, ncol = N+2, nrow = n)
     for(i in 1 : n){ 
       A[i,1] = 1
       A[i,2] = phi0(design[i,1], N)
@@ -250,8 +250,6 @@ kmMonotonic1D <- function(design, response,
   }    
   else stop ("basis.type",basis.type, "not supported")
   
-  
-
   invGamma1 <- chol(Gamma)
   invGamma <- chol2inv(invGamma1)
   
@@ -268,7 +266,6 @@ kmMonotonic1D <- function(design, response,
     v[N] <- -1
     
     BN <- cbind(CN,v)
-    
     D <- -BN
     Amat <- rbind(A, D)
   }
@@ -305,17 +302,17 @@ Phi1D.kmMonotonic1D <- function(model, newdata){
   N <- model$call$basis.size  
   x <- newdata
   if(model$call$basis.type=='C0'){
-    v <- matrix(0, nrow = length(x), ncol = N + 1)
+    v <- matrix(NA, nrow = length(x), ncol = N + 1)
     v[,1] <- model$phi0(x, N = N)
     v[,N+1] <- model$phiN(x, N = N)
-    for(j in 2 : (N)){
+    for(j in 2 : N){
       v[,j] = model$phii(x, j-1, N)
     }
     
     
   }else {
     
-    v <- matrix(0, nrow = length(x), ncol = N + 2)
+    v <- matrix(NA, nrow = length(x), ncol = N + 2)
     v[,1] <- 1
     v[,2] <- model$phi0(x, N = N)
     v[,N+2] <- model$phiN(x, N = N)
