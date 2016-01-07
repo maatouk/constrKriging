@@ -95,17 +95,17 @@ kmConvex1D <- function(design, response,
   
   fctGamma=function(.theta){
     Gamma <- matrix(data = NA, nrow = N+3, ncol = N+3)
-    Gamma[1, 1] <- k(0,0, sig, .theta)
-    Gamma[1, 2] <- kp2(0,0, sig, .theta)
-    Gamma[2, 1] <- kp1(0,0, sig, .theta)
-    Gamma[2, 2] <- kpp(0,0, sig, .theta)
+    Gamma[1, 1] <- k(0, 0, sig, .theta)
+    Gamma[1, 2] <- kp2(0, 0, sig, .theta)
+    Gamma[2, 1] <- kp1(0, 0, sig, .theta)
+    Gamma[2, 2] <- kpp(0, 0, sig, .theta)
     for(j in 3 : (N+3)){
       Gamma[1, j] <- kpp12(0, u[j-2], sig, .theta)
       Gamma[2, j] <- k3pp2(0,u[j-2], sig, .theta)
     }
     for(i in 3 : (N+3)){
       Gamma[i, 1] <- kpp12(u[i-2], 0, sig, .theta)
-      Gamma[i, 2] <- k3pp1(u[i-2],0, sig, .theta)
+      Gamma[i, 2] <- k3pp1(u[i-2], 0, sig, .theta)
     }
     for(i in 3 : (N+3)){
       for(j in 3 : (N+3)){

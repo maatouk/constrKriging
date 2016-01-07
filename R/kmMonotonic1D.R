@@ -89,7 +89,7 @@ kmMonotonic1D <- function(design, response,
     }
     # second derivative with respect to the 1er and second variables
     kpp <- function(x, xp, sig, theta){
-      (1/(theta^2))*k(x,xp, sig, theta)*(1-(x-xp)^2/(theta^2))
+      (1/(theta^2))*k(x, xp, sig, theta)*(1-(x-xp)^2/(theta^2))
     }
     
   }
@@ -99,7 +99,7 @@ kmMonotonic1D <- function(design, response,
       (sig^2)*(1+(sqrt(3)*abs(x-xp)/theta))*exp(-sqrt(3)*abs(x-xp)/theta)
     }
     # derivative with respect to the first variable
-    kp1 <- function(x, xp,sig, theta){
+    kp1 <- function(x, xp, sig, theta){
       sig^2*(sqrt(3)/theta*signp(x-xp)*exp(-sqrt(3)*(abs(x-xp)/theta))*(-sqrt(3)/theta*abs(x-xp)))
     }
     # derivative with respect to the second variable
@@ -121,17 +121,17 @@ kmMonotonic1D <- function(design, response,
     # derivative with respect to the first variable
     kp1 <- function(x, xp, sig, theta){
       sig^2*(sqrt(5)/(theta)*signp(x-xp)+10*(x-xp)/(3*theta^2))*exp(-sqrt(5)*(abs(x-xp))/theta)-
-        sqrt(5)/(theta)*signp(x-xp)*k(x,xp, sig, theta)
+        sqrt(5)/(theta)*signp(x-xp)*k(x, xp, sig, theta)
     }
     # derivative with respect to the second variable
     kp2 <- function(x, xp, sig, theta){
-      -kp1(x,xp, sig, theta)
+      -kp1(x, xp, sig, theta)
     }
     # second derivative with respect to the first and second variables
     kpp <- function(x, xp, sig, theta){
       sig^2*(-10/(3*theta^2)*exp(-sqrt(5)*(abs(x-xp))/theta)+
                (sqrt(5)/theta)*signp(x-xp)*exp(-sqrt(5)*(abs(x-xp))/theta)*(sqrt(5)/theta*signp(x-xp)+
-                                                                              10*(x-xp)/(3*theta^2)))-(sqrt(5)/theta)*signp(x-xp)*kp2(x,xp, sig, theta)
+                                                                              10*(x-xp)/(3*theta^2)))-(sqrt(5)/theta)*signp(x-xp)*kp2(x, xp, sig, theta)
     }
   }
   
@@ -187,7 +187,7 @@ kmMonotonic1D <- function(design, response,
     hi <- function(x, i, N){
       h((x - u[i+1])*N)
     }
-    phii <- function(x,i, N){
+    phii <- function(x, i, N){
       delta <- 1/N
       ifelse(x <= u[i], 0,  
              ifelse(x >= u[i] & x <= u[i+1], ((x-u[i])*hi(x, i, N))/2,
@@ -233,26 +233,24 @@ kmMonotonic1D <- function(design, response,
     Gamma=fctGamma(theta)
     
     A <- matrix(data = NA, ncol = N+2, nrow = n)
-    # for(i in 1 : n){ 
     A[, 1] = 1
-    A[, 2] = phi0(design[,1], N)
-    A[, N+2] = phiN(design[,1], N)
+    A[, 2] = phi0(design[, 1], N)
+    A[, N+2] = phiN(design[, 1], N)
     for(j in 3 : (N+1)){
       A[, j] = phii(design[, 1], j-2, N)
     }
   }
   
-  # }    
   else stop ("basis.type",basis.type, "not supported")
   
   invGamma <- chol2inv(chol(Gamma))
   
   if (basis.type=="C0"){
     CN <- diag(N)
-    for(i in 1:N){
-      for(j in 1:N){
+    for(i in 1 : N){
+      for(j in 1 : N){
         if(j==i+1){
-          CN[i,j]= -1
+          CN[i, j]= -1
         }
       }
     }
@@ -265,8 +263,8 @@ kmMonotonic1D <- function(design, response,
   }
   else {
     Amat1 <- diag(N+2)
-    Amat1[1,1] <- 0
-    Amat <- rbind(A,Amat1)
+    Amat1[1, 1] <- 0
+    Amat <- rbind(A, Amat1)
   }
   
   
@@ -297,10 +295,10 @@ Phi1D.kmMonotonic1D <- function(model, newdata){
   x <- newdata
   if(model$call$basis.type=='C0'){
     v <- matrix(NA, nrow = length(x), ncol = N + 1)
-    v[,1] <- model$phi0(x, N = N)
-    v[,N+1] <- model$phiN(x, N = N)
+    v[, 1] <- model$phi0(x, N = N)
+    v[, N+1] <- model$phiN(x, N = N)
     for(j in 2 : N){
-      v[,j] = model$phii(x, j-1, N)
+      v[, j] = model$phii(x, j-1, N)
     }
     
     

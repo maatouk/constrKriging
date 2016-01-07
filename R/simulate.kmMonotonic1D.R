@@ -28,7 +28,7 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=50, coef.cov=2.5, basis.size=50)
+#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=20^2, coef.cov=2.5, basis.size=50)
 #' x=seq(0,1,,100)
 #' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=40),col='gray',type='l',lty=1, ylab='response', xlab='input')
 #' lines(x,constrSpline(model)(x),lty=2,col='black',lwd=1)
@@ -51,7 +51,7 @@ simulate_process.kmMonotonic1D <- function(object, nsim, seed=NULL, newdata){
   B <- diag(ncol(A)) - t(A) %*% chol2inv(chol(A %*% t(A))) %*% A     
   epsilontilde <- eigen(t(B) %*% invGamma %*% B)$vectors
   epsilon <- B %*% epsilontilde[, 1 : p]
-  c <- eigen(t(B) %*% invGamma %*% B)$values[1:p]
+  c <- eigen(t(B) %*% invGamma %*% B)$values[1 : p]
   d <- 1/c[1 : p]                     
   zcentre <- Gamma %*% t(A) %*% chol2inv(chol(A %*% Gamma %*% t(A))) %*% response
   setoil <- t(epsilon) %*% (zetoil - zcentre)
