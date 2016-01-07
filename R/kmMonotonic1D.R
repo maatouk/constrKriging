@@ -155,12 +155,10 @@ kmMonotonic1D <- function(design, response,
     }
     
     A <- matrix(data = NA, ncol = N+1, nrow = n)
-    for(i in 1 : n){ 
-      A[i,1] = phi0(design[i,1], N)
-      A[i,N+1] = phiN(design[i,1], N)
-      for(j in 2 : N){
-        A[i,j] = phii(design[i,1], j-1, N)
-      }
+    A[, 1] = phi0(design[, 1], N)
+    A[, N+1] = phiN(design[, 1], N)
+    for(j in 2 : N){
+      A[, j] = phii(design[, 1], j-1, N)
     }
     
     fctGamma=function(.theta){
@@ -235,20 +233,19 @@ kmMonotonic1D <- function(design, response,
     Gamma=fctGamma(theta)
     
     A <- matrix(data = NA, ncol = N+2, nrow = n)
-    for(i in 1 : n){ 
-      A[i,1] = 1
-      A[i,2] = phi0(design[i,1], N)
-      A[i,N+2] = phiN(design[i,1], N)
-      for(j in 3 : (N+1)){
-        A[i,j] = phii(design[i,1], j-2, N)
-      }
+    # for(i in 1 : n){ 
+    A[, 1] = 1
+    A[, 2] = phi0(design[,1], N)
+    A[, N+2] = phiN(design[,1], N)
+    for(j in 3 : (N+1)){
+      A[, j] = phii(design[, 1], j-2, N)
     }
-    
-  }    
+  }
+  
+  # }    
   else stop ("basis.type",basis.type, "not supported")
   
-  invGamma1 <- chol(Gamma)
-  invGamma <- chol2inv(invGamma1)
+  invGamma <- chol2inv(chol(Gamma))
   
   if (basis.type=="C0"){
     CN <- diag(N)
@@ -274,12 +271,12 @@ kmMonotonic1D <- function(design, response,
   
   
   if (basis.type=="C0")
-    zetoil <- solve.QP(invGamma,dvec=rep(0,ncol(A)),Amat=t(Amat),bvec=c(response,rep(0,ncol(A)-1)),meq=n)$solution
+    zetoil <- solve.QP(invGamma,dvec=rep(0,N+1),Amat=t(Amat),bvec=c(response,rep(0,N)),meq=n)$solution
   else
-    zetoil <- solve.QP(invGamma,dvec=rep(0,ncol(A)),Amat=t(Amat),bvec=c(response,rep(0,ncol(A))),meq=n)$solution
+    zetoil <- solve.QP(invGamma,dvec=rep(0,N+2),Amat=t(Amat),bvec=c(response,rep(0,N+2)),meq=n)$solution
   
   return(structure(
-    list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,fctGamma=fctGamma,
+    list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,fctGamma=fctGamma, invGamma=invGamma,
          call=list(design=design,response=response,basis.size=basis.size,covtype=covtype,basis.type=basis.type,
                    coef.cov=coef.cov,coef.var=coef.var, nugget=nugget)
     ),class="kmMonotonic1D"))

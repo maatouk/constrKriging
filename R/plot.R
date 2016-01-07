@@ -15,7 +15,7 @@
 #' ## Convex Example
 #' design = c(0, 0.05, 0.2, 0.5, 0.85, 0.95)
 #' response = c(20, 15, 3, -5, 7, 15)
-#' model = kmConvex1D(design, response, coef.cov=0.3, coef.var=100)
+#' model = kmConvex1D(design, response, coef.cov=0.25, coef.var=100)
 #' plot(object=model, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=10)
 #' points(design,response,pch=19)
 
@@ -38,7 +38,7 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=50, coef.cov=2.5, basis.size=50)
+#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=20^2, coef.cov=2.5, basis.size=50)
 #' plot(object=model, median=FALSE, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
 #' curve(f, add=TRUE)
 #' points(design,response,pch=19)

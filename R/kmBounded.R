@@ -51,8 +51,8 @@ kmBounded1D <- function(design, response,
   #   }
   
   n <- nrow(design) # number of design points
-  N <- basis.size # discretization size
-  p <- (N + 1) - n # degree of freedom
+  N <- basis.size   # discretization size
+  p <- (N + 1) - n  # degree of freedom
   u <- seq(0, 1, by = 1/N) # discretization vector
   
   sig <- sqrt(coef.var)
@@ -80,7 +80,7 @@ kmBounded1D <- function(design, response,
   else stop('covtype', covtype, 'not supported')
   
   
-  # Definition of basis functions  
+  # Basis functions  
   phi <- function(x){
     ifelse(x >= -1 & x <= 1, 1-abs(x), 0)
   }
@@ -95,12 +95,10 @@ kmBounded1D <- function(design, response,
   }
   
   A <- matrix(data = NA, ncol = N+1, nrow = n)
-  for(i in 1 : n){ 
-    A[i,1] = phi0(design[i,1], N)
-    A[i,N+1] = phiN(design[i,1], N)
-    for(j in 2 : N){
-      A[i,j] = phii(design[i,1], j-1, N)
-    }
+  A[, 1] = phi0(design[, 1], N)
+  A[, N+1] = phiN(design[, 1], N)
+  for(j in 2 : N){
+    A[, j] = phii(design[, 1], j-1, N)
   }
   
   fctGamma=function(.theta){
@@ -115,10 +113,7 @@ kmBounded1D <- function(design, response,
   }
   Gamma=fctGamma(theta)
   
-  
-  
-  invGamma1 <- chol(Gamma)
-  invGamma <- chol2inv(invGamma1)
+  invGamma <- chol2inv(chol(Gamma))
   
   Amat2 <- diag(N+1)
   Amat1 <- rbind(A,Amat2)
@@ -127,7 +122,8 @@ kmBounded1D <- function(design, response,
   zetoil <- solve.QP(invGamma,dvec=rep(0,N+1),Amat=t(Amat),bvec=c(response,rep(lower,N+1),rep(-upper,N+1)),meq=n)$solution
   
   return(structure(
-    list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D, fctGamma=fctGamma,
+    list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D, 
+         fctGamma=fctGamma, invGamma=invGamma,
          call=list(design=design,response=response,basis.size=basis.size,covtype=covtype,
                    coef.cov=coef.cov,coef.var=coef.var, nugget=nugget, lower=lower,
                    upper=upper)),class="kmBounded1D"))
@@ -145,10 +141,10 @@ Phi1D.kmBounded1D <- function(model, newdata){
   x <- newdata
   
   v <- matrix(0, nrow = length(x), ncol = N+1)
-  v[,1] <- model$phi0(x, N = N)
-  v[,N+1] <- model$phiN(x, N = N)
+  v[, 1] <- model$phi0(x, N = N)
+  v[, N+1] <- model$phiN(x, N = N)
   for(j in 2 : N){
-    v[,j] = model$phii(x, j-1, N)
+    v[, j] = model$phii(x, j-1, N)
   }
   
   return(v)

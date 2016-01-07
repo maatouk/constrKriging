@@ -42,21 +42,22 @@ simulate_process.kmMonotonic1D <- function(object, nsim, seed=NULL, newdata){
   zetoil <- object$zetoil
   A <- object$A
   Gamma <- object$Gamma
+  invGamma <- object$invGamma
   p <- ncol(A)-nrow(object$call$design)
   response <- object$call$response
   D <- object$D
   
   
   B <- diag(ncol(A)) - t(A) %*% chol2inv(chol(A %*% t(A))) %*% A     
-  epsilontilde <- eigen(t(B) %*% chol2inv(chol(Gamma)) %*% B)$vectors
+  epsilontilde <- eigen(t(B) %*% invGamma %*% B)$vectors
   epsilon <- B %*% epsilontilde[, 1 : p]
-  c <- eigen(t(B) %*% chol2inv(chol(Gamma)) %*% B)$values[1:p]
+  c <- eigen(t(B) %*% invGamma %*% B)$values[1:p]
   d <- 1/c[1 : p]                     
   zcentre <- Gamma %*% t(A) %*% chol2inv(chol(A %*% Gamma %*% t(A))) %*% response
   setoil <- t(epsilon) %*% (zetoil - zcentre)
   
   if (object$call$basis.type == 'C0'){
-    Xi <- matrix(-1, ncol = nsim, nrow = ((ncol(A))))
+    Xi <- matrix(-1, ncol = nsim, nrow = N+1)
     for (j in 1 : nsim){
       Xi_current <- Xi[, j]
       unif <- 1
@@ -73,7 +74,7 @@ simulate_process.kmMonotonic1D <- function(object, nsim, seed=NULL, newdata){
       Xi[, j] <- Xi_current
     } 
   } else {
-    Xi <- matrix(-1, ncol = nsim, nrow = ncol(A))
+    Xi <- matrix(-1, ncol = nsim, nrow = N+2)
     for (j in 1 : nsim){
       Xi_current <- Xi[, j]
       unif <- 1

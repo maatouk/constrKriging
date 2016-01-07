@@ -5,6 +5,7 @@
 #' @param seed optional random seed
 #' @import MASS
 #' @import solve.QP
+
 #' @examples 
 #' design=c(0, 0.1, 0.2, 0.42, 0.5, 0.9)
 #' response = c(10, 7, -8, -5, 10, 15)
@@ -23,6 +24,7 @@ simulate_process.kmBounded1D <- function(object, nsim, seed=NULL, newdata){
   zetoil <- object$zetoil
   A <- object$A
   Gamma <- object$Gamma
+  invGamma <- object$invGamma
   p <- ncol(A)-nrow(object$call$design)
   response <- object$call$response
   D <- object$D
@@ -30,9 +32,9 @@ simulate_process.kmBounded1D <- function(object, nsim, seed=NULL, newdata){
   upper <- object$call$upper
   
   B <- diag(ncol(A)) - t(A) %*% chol2inv(chol(A %*% t(A))) %*% A    
-  epsilontilde <- eigen(t(B) %*% chol2inv(chol(Gamma)) %*% B)$vectors
+  epsilontilde <- eigen(t(B) %*% invGamma %*% B)$vectors
   epsilon <- B %*% epsilontilde[, 1 : p]
-  c <- eigen(t(B) %*% chol2inv(chol(Gamma)) %*% B)$values[1:p]
+  c <- eigen(t(B) %*% invGamma %*% B)$values[1:p]
   d <- 1/(c[1 : p])       
   zcentre <- Gamma %*% t(A) %*% chol2inv(chol(A %*% Gamma %*% t(A))) %*% response 
   setoil <- t(epsilon) %*% (zetoil - zcentre)

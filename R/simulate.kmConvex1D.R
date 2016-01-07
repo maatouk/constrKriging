@@ -11,7 +11,7 @@
 #' response = c(10, 5, 9)
 #' model = kmConvex1D(design, response, coef.cov = 0.35)
 #' x = seq(0,1,,100)
-#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100), type='l', col='gray', lty=1)
+#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100), type='l', col='gray', lty=1, ylab='response')
 #' lines(x,constrSpline(object=model)(x), lty=1, col='black')
 #' points(design, response, pch=19)
 
@@ -22,17 +22,18 @@ simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
   zetoil <- object$zetoil
   A <- object$A
   Gamma <- object$Gamma
+  invGamma <- object$invGamma
   p <- ncol(A)-nrow(object$call$design)
   response <- object$call$response
   D <- object$D
   
   
   B <- diag(ncol(A)) - t(A) %*% chol2inv(chol(A %*% t(A))) %*% A     
-  epsilontilde <- eigen(t(B) %*% chol2inv(chol(Gamma)) %*% B)$vectors
+  epsilontilde <- eigen(t(B) %*% invGamma %*% B)$vectors
   epsilon <- B %*% epsilontilde[, 1 : p]
-  c <- eigen(t(B) %*% chol2inv(chol(Gamma)) %*% B)$values[1:p]
+  c <- eigen(t(B) %*% invGamma %*% B)$values[1:p]
   d <- 1/c[1 : p]                     
-  zcentre <- Gamma %*% t(A) %*% solve(A %*% Gamma %*% t(A)) %*% response
+  zcentre <- Gamma %*% t(A) %*% chol2inv(chol(A %*% Gamma %*% t(A))) %*% response
   setoil <- t(epsilon) %*% (zetoil - zcentre)
   
   Xi <- matrix(-1, ncol = nsim, nrow = (N+3))
