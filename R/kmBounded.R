@@ -91,7 +91,7 @@ kmBounded1D <- function(design, response,
     phi((x-u[N+1])*N)
   }
   phii <- function(x, i, N){
-    phi((x - u[i+1])*N)
+    phi((x-u[i+1])*N)
   }
   
   A <- matrix(data = NA, ncol = N+1, nrow = n)
@@ -105,7 +105,7 @@ kmBounded1D <- function(design, response,
     Gamma <- matrix(data = NA, nrow = N+1, ncol = N+1)
     for(i in 1 : (N+1)){
       for(j in 1 : (N+1)){
-        Gamma[i, j] = k(u[i], u[j], sig , .theta)
+        Gamma[i, j] = k(u[i], u[j], sig, .theta)
       }
     }
     Gamma <- Gamma + nugget * diag(N+1)
@@ -140,7 +140,7 @@ Phi1D.kmBounded1D <- function(model, newdata){
   N <- model$call$basis.size  
   x <- newdata
   
-  v <- matrix(0, nrow = length(x), ncol = N+1)
+  v <- matrix(NA, nrow = length(x), ncol = N+1)
   v[, 1] <- model$phi0(x, N = N)
   v[, N+1] <- model$phiN(x, N = N)
   for(j in 2 : N){

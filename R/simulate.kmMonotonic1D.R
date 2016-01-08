@@ -9,7 +9,7 @@
 #' @examples 
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(1, 5, 5.5)
-#' model <- kmMonotonic1D(design, response, covtype="matern5_2", coef.var=1, coef.cov=0.5, basis.size=50)
+#' model <- kmMonotonic1D(design, response, coef.var=1, coef.cov=0.5, basis.size=50)
 #' x=seq(0,1,,100)
 #' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=40),col='gray',type='l',lty=1, ylab='response', xlab='input')
 #' lines(x,constrSpline(object=model)(x), lty=1,col='black')
@@ -28,7 +28,7 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=20^2, coef.cov=2.5, basis.size=50)
+#' model = kmMonotonic1D(design, response, coef.var=20^2, coef.cov=2.5, basis.size=50)
 #' x=seq(0,1,,100)
 #' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=40),col='gray',type='l',lty=1, ylab='response', xlab='input')
 #' lines(x,constrSpline(model)(x),lty=2,col='black',lwd=1)
@@ -68,7 +68,7 @@ simulate_process.kmMonotonic1D <- function(object, nsim, seed=NULL, newdata){
           s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
           Xi_current <- as.vector(zcentre) + (epsilon %*% s)
         }
-        t <- as.numeric(exp(sum((setoil -s) * setoil * c)))  
+        t <- as.numeric(exp(sum((setoil - s) * setoil * c)))  
         unif <- runif(1, 0, 1)
       }
       Xi[, j] <- Xi_current
@@ -84,7 +84,7 @@ simulate_process.kmMonotonic1D <- function(object, nsim, seed=NULL, newdata){
           s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
           Xi_current <- as.vector(zcentre) + (epsilon %*% s)
         }
-        t <- as.numeric(exp(sum(setoil * setoil / d) - sum(s * setoil / d)))
+        t <- as.numeric(exp(sum((setoil - s) * setoil * c)))
         unif <- runif(1, 0, 1)
       }
       Xi[, j] <- Xi_current

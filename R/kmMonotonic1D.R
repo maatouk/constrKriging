@@ -9,10 +9,11 @@
 #' @param coef.var a value specifying the variance parameter
 #' @param nugget an optimal value used as nugget effect to solve the numerical inverse matrix problem
 #' @import quadrpog
+
 #' @examples 
 #' kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9))
 #' kmMonotonic1D(design=c(0.1, 0.5, 0.9), response=c(1, 5, 9), basis.type="C0")
-#' kmMonotonic1D(design=sort(runif(5)),response=cumsum(runif(5)),nugget=1e-4,covtype="gauss")
+#' kmMonotonic1D(design=sort(runif(5)), response=cumsum(runif(5)), nugget=1e-4, covtype="gauss")
 
 # ## Golchi Example
 #' f <- function(x){
@@ -26,7 +27,7 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, basis.type="C1", covtype="matern5_2", coef.var=1, coef.cov=0.3,basis.size=50)
+#' model = kmMonotonic1D(design, response, coef.var=1, coef.cov=0.3,basis.size=50)
 
 
 
@@ -250,14 +251,14 @@ kmMonotonic1D <- function(design, response,
     for(i in 1 : N){
       for(j in 1 : N){
         if(j==i+1){
-          CN[i, j]= -1
+          CN[i, j] = -1
         }
       }
     }
-    v <- rep(0,N)
+    v <- rep(0, N)
     v[N] <- -1
     
-    BN <- cbind(CN,v)
+    BN <- cbind(CN, v)
     D <- -BN
     Amat <- rbind(A, D)
   }
@@ -269,18 +270,15 @@ kmMonotonic1D <- function(design, response,
   
   
   if (basis.type=="C0")
-    zetoil <- solve.QP(invGamma,dvec=rep(0,N+1),Amat=t(Amat),bvec=c(response,rep(0,N)),meq=n)$solution
+    zetoil <- solve.QP(invGamma, dvec=rep(0, N+1), Amat=t(Amat), bvec=c(response, rep(0, N)), meq=n)$solution
   else
-    zetoil <- solve.QP(invGamma,dvec=rep(0,N+2),Amat=t(Amat),bvec=c(response,rep(0,N+2)),meq=n)$solution
+    zetoil <- solve.QP(invGamma, dvec=rep(0, N+2), Amat=t(Amat), bvec=c(response, rep(0, N+2)), meq=n)$solution
   
   return(structure(
     list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,fctGamma=fctGamma, invGamma=invGamma,
          call=list(design=design,response=response,basis.size=basis.size,covtype=covtype,basis.type=basis.type,
                    coef.cov=coef.cov,coef.var=coef.var, nugget=nugget)
     ),class="kmMonotonic1D"))
-  #return(list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,call=list(design=design,
-  #                                                                                                            response=response,basis.size=basis.size,covtype=covtype,basis.type=basis.type,
-  #                                                                                                            coef.cov=coef.cov,coef.var=coef.var, nugget=nugget)))
 }
 
 

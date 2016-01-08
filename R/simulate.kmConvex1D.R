@@ -31,7 +31,7 @@ simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
   B <- diag(ncol(A)) - t(A) %*% chol2inv(chol(A %*% t(A))) %*% A     
   epsilontilde <- eigen(t(B) %*% invGamma %*% B)$vectors
   epsilon <- B %*% epsilontilde[, 1 : p]
-  c <- eigen(t(B) %*% invGamma %*% B)$values[1:p]
+  c <- eigen(t(B) %*% invGamma %*% B)$values[1 : p]
   d <- 1/c[1 : p]                     
   zcentre <- Gamma %*% t(A) %*% chol2inv(chol(A %*% Gamma %*% t(A))) %*% response
   setoil <- t(epsilon) %*% (zetoil - zcentre)
@@ -47,7 +47,7 @@ simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
         s <- setoil + sqrt(d)*matrix(rnorm(p, 0, 1), ncol = 1)
         Xi_current <- as.vector(zcentre) + (epsilon %*% s)
       }
-      t <- as.numeric(exp(sum((setoil -s) * setoil * c)))  
+      t <- as.numeric(exp(sum((setoil - s) * setoil * c)))  
       unif <- runif(1, 0, 1)
     }
     Xi[, j] <- Xi_current

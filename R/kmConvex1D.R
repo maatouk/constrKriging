@@ -61,15 +61,15 @@ kmConvex1D <- function(design, response,
     }
     ## first partial derivative
     kp1 <- function(x, xp, sig, theta){
-      -(x-xp)/(theta^2)*k(x,xp, sig, theta)
+      -(x-xp)/(theta^2)*k(x, xp, sig, theta)
     }
     ## second partial derivative
     kp2 <- function(x, xp, sig, theta){
-      -kp1(x,xp, sig, theta)
+      -kp1(x, xp, sig, theta)
     }
     ## derivation of the Gaussian kernel with respect to the 1er and second variable
     kpp <- function(x, xp, sig, theta){
-      (1/(theta^2))*k(x,xp, sig, theta)*(1-(x-xp)^2/(theta^2))
+      (1/(theta^2))*k(x, xp, sig, theta)*(1-(x-xp)^2/(theta^2))
     }
     ## two times derivative with respect to the first or the second variable
     kpp12 <- function(x,xp, sig, theta){
