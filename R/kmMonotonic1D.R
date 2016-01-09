@@ -139,9 +139,9 @@ kmMonotonic1D <- function(design, response,
   else stop('covtype', covtype, 'not supported')
   
   
-  ## basis functions (hat functions)  
+  
   if(basis.type=="C0"){
-    
+    ## basis functions (hat functions)      
     phi <- function(x){
       ifelse(x >= -1 & x <= 1, 1-abs(x), 0)
     }
@@ -176,6 +176,7 @@ kmMonotonic1D <- function(design, response,
     
     
   }else if (basis.type == "C1"){
+    ## basis functions (hat functions)
     h <- function(x){
       ifelse(x >= -1 & x <= 1, 1-abs(x), 0)
     }
@@ -188,6 +189,7 @@ kmMonotonic1D <- function(design, response,
     hi <- function(x, i, N){
       h((x - u[i+1])*N)
     }
+    ## primitive of the hat functions
     phii <- function(x, i, N){
       delta <- 1/N
       ifelse(x <= u[i], 0,  

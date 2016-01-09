@@ -117,18 +117,17 @@ kmConvex1D <- function(design, response,
   }
   Gamma=fctGamma(theta)
   
+  ## basis functions (double primitive of the hat functions)
   phi0 <- function(x, N){
     ifelse(x <= -delta, -delta*x/2-delta^2/6, ifelse(x >= -delta & x <= 0, 
                                                      (x+delta)^3/(6*delta)-delta*x/2-delta^2/6,
                                                      ifelse(x >= 0 & x <= delta, (delta-x)^3/(6*delta)+delta*x/2-delta^2/6, delta*x/2-1/6*delta^2)))
   }
-  
   phii <- function(x, i, N){
     ifelse(x <= u[i], 0, ifelse(x >= u[i] & x <= u[i+1], (delta+x-u[i+1])^3/(6*delta),
                                 ifelse(x >= u[i+1] & x <= u[i+2], delta*(x-u[i+1])+(delta-x+u[i+1])^3/(6*delta),
                                        delta^2+delta*(x-u[i+2]))))
   }
-  
   phiN <- function(x, N){
     phii(x-delta, N-1)
   }
@@ -151,7 +150,7 @@ kmConvex1D <- function(design, response,
   
   invGamma <- chol2inv(chol(Gamma))
   
-  zetoil <- solve.QP(invGamma,dvec=rep(0,ncol(A)),Amat=t(Amat),bvec=c(response,rep(0,ncol(A))),meq=n)$solution
+  zetoil <- solve.QP(invGamma, dvec=rep(0, ncol(A)), Amat=t(Amat), bvec=c(response, rep(0, ncol(A))), meq=n)$solution
   
   return(structure(list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,fctGamma=fctGamma, invGamma=invGamma,
                         call=list(design=design, response=response,basis.size=basis.size,covtype=covtype, coef.cov=coef.cov,coef.var=coef.var, nugget=nugget))

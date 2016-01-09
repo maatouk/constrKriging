@@ -116,10 +116,10 @@ kmBounded1D <- function(design, response,
   invGamma <- chol2inv(chol(Gamma))
   
   Amat2 <- diag(N+1)
-  Amat1 <- rbind(A,Amat2)
-  Amat <- rbind(Amat1,-Amat2)
+  Amat1 <- rbind(A, Amat2)
+  Amat <- rbind(Amat1, -Amat2)
   
-  zetoil <- solve.QP(invGamma,dvec=rep(0,N+1),Amat=t(Amat),bvec=c(response,rep(lower,N+1),rep(-upper,N+1)),meq=n)$solution
+  zetoil <- solve.QP(invGamma, dvec=rep(0, N+1), Amat=t(Amat), bvec=c(response, rep(lower, N+1), rep(-upper, N+1)), meq=n)$solution
   
   return(structure(
     list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D, 
