@@ -113,7 +113,6 @@ kmMonotonic1D <- function(design, response,
     }
     
   }
-  
   else if(covtype=='matern5_2'){    
     # Matern 5/2 covariance kernel
     k <- function(x, xp, sig, theta){
@@ -152,7 +151,7 @@ kmMonotonic1D <- function(design, response,
       phi((x-u[N+1])*N)
     }
     phii <- function(x, i, N){
-      phi((x - u[i+1])*N)
+      phi((x-u[i+1])*N)
     }
     
     A <- matrix(data = NA, ncol = N+1, nrow = n)
@@ -194,8 +193,8 @@ kmMonotonic1D <- function(design, response,
       delta <- 1/N
       ifelse(x <= u[i], 0,  
              ifelse(x >= u[i] & x <= u[i+1], ((x-u[i])*hi(x, i, N))/2,
-                    ifelse(x >= u[i+1] & x <= u[i+2], delta - ((u[i+2]-x)*hi(x, i, N))/2
-                           , delta
+                    ifelse(x >= u[i+1] & x <= u[i+2], delta - ((u[i+2]-x)*hi(x, i, N))/2,
+                           delta
                     )
              )
       )
@@ -277,10 +276,10 @@ kmMonotonic1D <- function(design, response,
     zetoil <- solve.QP(invGamma, dvec=rep(0, N+2), Amat=t(Amat), bvec=c(response, rep(0, N+2)), meq=n)$solution
   
   return(structure(
-    list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,fctGamma=fctGamma, invGamma=invGamma,
-         call=list(design=design,response=response,basis.size=basis.size,covtype=covtype,basis.type=basis.type,
-                   coef.cov=coef.cov,coef.var=coef.var, nugget=nugget)
-    ),class="kmMonotonic1D"))
+    list(zetoil=zetoil, phi0=phi0, phiN=phiN, phii=phii, Amat=Amat, Gamma=Gamma, A=A, D=D, fctGamma=fctGamma, invGamma=invGamma,
+         call=list(design=design, response=response, basis.size=basis.size, covtype=covtype, basis.type=basis.type,
+                   coef.cov=coef.cov, coef.var=coef.var, nugget=nugget)
+    ), class="kmMonotonic1D"))
 }
 
 
@@ -293,7 +292,7 @@ kmMonotonic1D <- function(design, response,
 Phi1D.kmMonotonic1D <- function(model, newdata){
   N <- model$call$basis.size  
   x <- newdata
-  if(model$call$basis.type=='C0'){
+  if(model$call$basis.type == 'C0'){
     v <- matrix(NA, nrow = length(x), ncol = N + 1)
     v[, 1] <- model$phi0(x, N = N)
     v[, N+1] <- model$phiN(x, N = N)

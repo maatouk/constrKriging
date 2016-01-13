@@ -18,6 +18,23 @@
 #' abline(h=model$call$lower, lty=2)
 #' abline(h=model$call$upper, lty=2)
 
+#### Relaxing boundedness constraints
+#' @examples 
+#' design=c(0, 0.1, 0.2, 0.42, 0.5, 0.9)
+#' response = c(10, 7, -8, -5, 10, 15)
+#' model = kmBounded1D(design, response, lower = -25, upper = 50, covtype='gauss', coef.cov=0.15, coef.var=20^2, basis.size = 50)
+#' x = seq(0,1,,101)
+#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100),
+#' type='l', col='gray', lty = 1, ylab = "response", ylim=c(model$call$lower,model$call$upper))
+#' lines(x,constrSpline(object=model)(x), lty=1,col='black')
+#' points(design, response, pch=19)
+#' abline(h=model$call$lower, lty=2)
+#' abline(h=model$call$upper, lty=2)
+
+
+
+
+
 simulate_process.kmBounded1D <- function(object, nsim, seed=NULL, newdata){
   if (!is.null(seed)) set.seed(seed)
   
@@ -26,7 +43,7 @@ simulate_process.kmBounded1D <- function(object, nsim, seed=NULL, newdata){
   A <- object$A
   Gamma <- object$Gamma
   invGamma <- object$invGamma
-  p <- ncol(A)-nrow(object$call$design)
+  p <- ncol(A) - nrow(object$call$design)
   response <- object$call$response
   D <- object$D
   lower <- object$call$lower
@@ -36,7 +53,7 @@ simulate_process.kmBounded1D <- function(object, nsim, seed=NULL, newdata){
   epsilontilde <- eigen(t(B) %*% invGamma %*% B)$vectors
   epsilon <- B %*% epsilontilde[, 1 : p]
   c <- eigen(t(B) %*% invGamma %*% B)$values[1 : p]
-  d <- 1 / c[1 : p]       
+  d <- 1/c[1 : p]       
   zcentre <- Gamma %*% t(A) %*% chol2inv(chol(A %*% Gamma %*% t(A))) %*% response 
   setoil <- t(epsilon) %*% (zetoil - zcentre)
   

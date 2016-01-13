@@ -101,7 +101,7 @@ kmConvex1D <- function(design, response,
     Gamma[2, 2] <- kpp(0, 0, sig, .theta)
     for(j in 3 : (N+3)){
       Gamma[1, j] <- kpp12(0, u[j-2], sig, .theta)
-      Gamma[2, j] <- k3pp2(0,u[j-2], sig, .theta)
+      Gamma[2, j] <- k3pp2(0, u[j-2], sig, .theta)
     }
     for(i in 3 : (N+3)){
       Gamma[i, 1] <- kpp12(u[i-2], 0, sig, .theta)
@@ -132,7 +132,6 @@ kmConvex1D <- function(design, response,
     phii(x-delta, N-1)
   }
   
-  
   A <- matrix(data = NA, ncol = N+3, nrow = n)
   A[, 1] = 1
   A[, 2] = design[, 1]
@@ -152,8 +151,8 @@ kmConvex1D <- function(design, response,
   
   zetoil <- solve.QP(invGamma, dvec=rep(0, ncol(A)), Amat=t(Amat), bvec=c(response, rep(0, ncol(A))), meq=n)$solution
   
-  return(structure(list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D,fctGamma=fctGamma, invGamma=invGamma,
-                        call=list(design=design, response=response,basis.size=basis.size,covtype=covtype, coef.cov=coef.cov,coef.var=coef.var, nugget=nugget))
+  return(structure(list(zetoil=zetoil, phi0=phi0, phiN=phiN, phii=phii, Amat=Amat, Gamma=Gamma, A=A, D=D, fctGamma=fctGamma, invGamma=invGamma,
+                        call=list(design=design, response=response, basis.size=basis.size, covtype=covtype, coef.cov=coef.cov, coef.var=coef.var, nugget=nugget))
                    , class = 'kmConvex1D'))
   
 }

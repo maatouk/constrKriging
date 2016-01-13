@@ -122,11 +122,11 @@ kmBounded1D <- function(design, response,
   zetoil <- solve.QP(invGamma, dvec=rep(0, N+1), Amat=t(Amat), bvec=c(response, rep(lower, N+1), rep(-upper, N+1)), meq=n)$solution
   
   return(structure(
-    list(zetoil=zetoil,phi0=phi0,phiN=phiN,phii=phii,Amat=Amat,Gamma=Gamma, A=A, D=D, 
+    list(zetoil=zetoil, phi0=phi0, phiN=phiN, phii=phii, Amat=Amat, Gamma=Gamma, A=A, D=D, 
          fctGamma=fctGamma, invGamma=invGamma,
-         call=list(design=design,response=response,basis.size=basis.size,covtype=covtype,
-                   coef.cov=coef.cov,coef.var=coef.var, nugget=nugget, lower=lower,
-                   upper=upper)),class="kmBounded1D"))
+         call=list(design=design, response=response, basis.size=basis.size, covtype=covtype,
+                   coef.cov=coef.cov, coef.var=coef.var, nugget=nugget, lower=lower,
+                   upper=upper)), class="kmBounded1D"))
 }
 
 

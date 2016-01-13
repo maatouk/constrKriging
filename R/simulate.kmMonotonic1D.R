@@ -43,7 +43,7 @@ simulate_process.kmMonotonic1D <- function(object, nsim, seed=NULL, newdata){
   A <- object$A
   Gamma <- object$Gamma
   invGamma <- object$invGamma
-  p <- ncol(A)-nrow(object$call$design)
+  p <- ncol(A) - nrow(object$call$design)
   response <- object$call$response
   D <- object$D
   
