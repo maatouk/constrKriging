@@ -1,4 +1,3 @@
-
 #' @title Kriging model with monotonicity 1D constraint
 #' @param design 1-column matrix of the design of experiments
 #' @param response a vector containing the output values given by the real function at the design points
@@ -27,7 +26,7 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, coef.var=1, coef.cov=0.3,basis.size=50)
+#' model = kmMonotonic1D(design, response, coef.var=335^2, coef.cov=4.7,basis.size=50)
 
 
 
@@ -165,13 +164,13 @@ kmMonotonic1D <- function(design, response,
       Gamma <- matrix(data = NA, nrow = N+1, ncol = N+1)
       for(i in 1 : (N+1)){
         for(j in 1 : (N+1)){
-          Gamma[i, j] = k(u[i], u[j], sig , .theta)
+          Gamma[i, j] = k(u[i], u[j], sig, .theta)
         }
       }
       Gamma <- Gamma + nugget * diag(N+1)
       return(Gamma)
     }
-    Gamma=fctGamma(theta)
+    Gamma <- fctGamma(theta)
     
     
   }else if (basis.type == "C1"){
@@ -186,7 +185,7 @@ kmMonotonic1D <- function(design, response,
       h((x-u[N+1])*N)
     }
     hi <- function(x, i, N){
-      h((x - u[i+1])*N)
+      h((x-u[i+1])*N)
     }
     ## primitive of the hat functions
     phii <- function(x, i, N){
@@ -217,9 +216,9 @@ kmMonotonic1D <- function(design, response,
     
     fctGamma=function(.theta){
       Gamma <- matrix(data = NA, nrow = N+2, ncol = N+2)
-      Gamma[1,1] <- k(0,0, sig, .theta)
+      Gamma[1, 1] <- k(0, 0, sig, .theta)
       for(j in 2 : (N+2)){
-        Gamma[1,j] <- kp2(0, u[j-1], sig, .theta)
+        Gamma[1, j] <- kp2(0, u[j-1], sig, .theta)
       }
       for(i in 2 : (N+2)){
         Gamma[i,1] <- kp1(u[i-1], 0, sig, .theta)
@@ -232,7 +231,7 @@ kmMonotonic1D <- function(design, response,
       Gamma <- Gamma + nugget * diag(N+2) 
       return(Gamma)
     }
-    Gamma=fctGamma(theta)
+    Gamma <- fctGamma(theta)
     
     A <- matrix(data = NA, ncol = N+2, nrow = n)
     A[, 1] = 1
@@ -293,22 +292,22 @@ Phi1D.kmMonotonic1D <- function(model, newdata){
   N <- model$call$basis.size  
   x <- newdata
   if(model$call$basis.type == 'C0'){
-    v <- matrix(NA, nrow = length(x), ncol = N + 1)
+    v <- matrix(NA, nrow = length(x), ncol = N+1)
     v[, 1] <- model$phi0(x, N = N)
     v[, N+1] <- model$phiN(x, N = N)
     for(j in 2 : N){
-      v[, j] = model$phii(x, j-1, N)
+      v[, j] = model$phii(x, j-1, N = N)
     }
     
     
   }else {
     
-    v <- matrix(NA, nrow = length(x), ncol = N + 2)
+    v <- matrix(NA, nrow = length(x), ncol = N+2)
     v[, 1] <- 1
     v[, 2] <- model$phi0(x, N = N)
     v[, N+2] <- model$phiN(x, N = N)
     for(j in 3 : (N+1)){
-      v[, j] = model$phii(x, j-2, N)
+      v[, j] = model$phii(x, j-2, N = N)
     }
   }
   return(v)

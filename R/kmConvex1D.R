@@ -115,7 +115,7 @@ kmConvex1D <- function(design, response,
     Gamma <- Gamma + nugget * diag(N+3)
     return(Gamma)
   }
-  Gamma=fctGamma(theta)
+  Gamma <- fctGamma(theta)
   
   ## basis functions (double primitive of the hat functions)
   phi0 <- function(x, N){
@@ -129,7 +129,7 @@ kmConvex1D <- function(design, response,
                                        delta^2+delta*(x-u[i+2]))))
   }
   phiN <- function(x, N){
-    phii(x-delta, N-1)
+    phii(x-delta, N-1, N)
   }
   
   A <- matrix(data = NA, ncol = N+3, nrow = n)
@@ -171,7 +171,7 @@ Phi1D.kmConvex1D <- function(model, newdata){
   v[, 3] <- model$phi0(x, N = N)
   v[, N+3] <- model$phiN(x, N = N)
   for(j in 4 : (N+2)){
-    v[, j] = model$phii(x, j-3, N)
+    v[, j] = model$phii(x, j-3, N = N)
   }
   return(v)
 }

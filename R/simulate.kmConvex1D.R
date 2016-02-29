@@ -5,15 +5,18 @@
 #' @param seed optional random seed
 #' @import MASS
 
-#' simulate(object=kmConvex1D(design=c(0.2, 0.5, 0.9), response=c(3, -5, 8)),newdata=seq(f=0,t=1,l=100),nsim=10)
 #' @examples 
 #' design = c(0.1, 0.5, 0.9)
 #' response = c(10, 5, 9)
 #' model = kmConvex1D(design, response, coef.cov = 0.35)
-#' x = seq(0,1,,100)
-#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100), type='l', col='gray', lty=1, ylab='response')
+#' x = seq(0, 1,, 100)
+#' graphics::matplot(x, y=simulate_process(object=model, newdata=x, nsim=100), type='l', col='gray', lty=1, ylab='response')
 #' lines(x,constrSpline(object=model)(x), lty=1, col='black')
 #' points(design, response, pch=19)
+#' legend(0.15, 12.5, c("convex GP sample paths", "posterior max"), 
+#'        col = c('gray', 'black'), text.col = "black",
+#'        lty = c(1, 1), pch=c(NA_integer_, NA_integer_), lwd = c(2, 2), text.font=1, box.lty=0, cex=1)
+
 
 simulate_process.kmConvex1D <- function(object, nsim, seed=NULL, newdata){
   if (!is.null(seed)) set.seed(seed)

@@ -15,16 +15,17 @@
 #' ## Convex Example
 #' design = c(0, 0.05, 0.2, 0.5, 0.85, 0.95)
 #' response = c(20, 15, 3, -5, 7, 15)
-#' model = kmConvex1D(design, response, coef.cov=0.25, coef.var=100)
-#' plot(object=model, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=10)
+#' model = kmConvex1D(design, response, coef.cov=0.2, coef.var=20^2)
+#' plot(object=model, spline=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
 #' points(design,response,pch=19)
 
 #' ## Monotone Example
-#' design = c(0.1, 0.5, 0.9)
-#' response = c(1, 7, 9)
-#' model = kmMonotonic1D(design, response, coef.cov=3, coef.var=50^2)
-#' plot(object=model, spline=TRUE, median=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
+#' design = c(0.1, 0.3, 0.7, 0.9)
+#' response = c(1, 7, 9, 11)
+#' model = kmMonotonic1D(design, response, coef.cov=1.5, coef.var=50^2)
+#' plot(object=model, spline=FALSE, median=FALSE, mean=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
 #' points(design,response,pch=19)
+
 
 #' ## Golchi Example
 #' f <- function(x){
@@ -38,16 +39,21 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=20^2, coef.cov=2.5, basis.size=50)
-#' plot(object=model, median=FALSE, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
+#' model = kmMonotonic1D(design, response, covtype="matern5_2", coef.var=335^2, coef.cov=4.37, basis.size=50)
+#' plot(object=model, median=FALSE, spline=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=1000)
 #' curve(f, add=TRUE)
 #' points(design,response,pch=19)
+#' legend(0.3, -0.5, c("true function", "95% credible bands"), 
+#'        col = c('black', 'gray'), text.col = "black",
+#'        lty = c(1, 1), pch=c(NA_integer_, NA_integer_),lwd = c(2, 10), text.font=1,box.lty=0, cex=1)
+
+
 
 #' ## Boundedness Example
 #' design <- c(0.1, 0.3, 0.5, 0.9)
 #' response <- c(7, -8, 8, 15)
 #' model = kmBounded1D(design, response, lower=-10, upper = 15, coef.cov=0.3, coef.var=15, basis.size=50)
-#' plot(object=model, median=FALSE, spline=TRUE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
+#' plot(object=model, median=FALSE, spline=FALSE, quantiles=TRUE, minmax=FALSE, col='gray',nsim=100)
 #' abline(h=15,lty=2)
 #' abline(h=-10, lty=2)
 #' points(design,response,pch=19)

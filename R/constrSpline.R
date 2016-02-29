@@ -11,7 +11,7 @@
 #' points(design, response, pch=19)
 constrSpline <- function(object){
   f = function(x){
-    Phi1D(model=object, newdata=x)%*%matrix(object$zetoil,ncol=1)
+    Phi1D(model=object, newdata=x)%*%matrix(object$zetoil, ncol=1)
   }
   return(f)
 }

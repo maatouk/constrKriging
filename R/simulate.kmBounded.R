@@ -7,14 +7,18 @@
 #' @import solve.QP
 
 #' @examples 
-#' design=c(0, 0.1, 0.2, 0.42, 0.5, 0.9)
+#' design = c(0, 0.1, 0.2, 0.42, 0.5, 0.9)
 #' response = c(10, 7, -8, -5, 10, 15)
 #' model = kmBounded1D(design, response, lower = -20, upper = 20, coef.cov=0.2, coef.var=100, basis.size = 50)
-#' x = seq(0,1,,101)
-#' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100),
-#' type='l', col='gray', lty = 1, ylab = "response", ylim=c(model$call$lower,model$call$upper))
-#' lines(x,constrSpline(object=model)(x), lty=1,col='black')
+#' x = seq(0,1,,100)
+#' y = simulate_process(object=model, newdata=x, nsim=100)
+#' graphics::matplot(x, y, type='l', col='gray', lty = 1, ylab = "response", ylim=c(model$call$lower,model$call$upper))
+#' lines(x, constrSpline(object=model)(x), lty=1, lwd=2, col='black')
+#' lines(x, rowMeans(y), lty=2, lwd=2, col='black')
 #' points(design, response, pch=19)
+#' legend(0.45, -8, c("posterior mean", "posterior max"), 
+#'        col = c('black', 'black'), text.col = "black",
+#'        lty = c(2, 1), pch=c(NA_integer_, NA_integer_),lwd = c(2, 2), text.font=1,box.lty=0, cex=0.8)
 #' abline(h=model$call$lower, lty=2)
 #' abline(h=model$call$upper, lty=2)
 
@@ -23,15 +27,16 @@
 #' design=c(0, 0.1, 0.2, 0.42, 0.5, 0.9)
 #' response = c(10, 7, -8, -5, 10, 15)
 #' model = kmBounded1D(design, response, lower = -25, upper = 50, covtype='gauss', coef.cov=0.15, coef.var=20^2, basis.size = 50)
-#' x = seq(0,1,,101)
+#' x = seq(0,1,,100)
 #' graphics::matplot(x,y=simulate_process(object=model, newdata=x, nsim=100),
 #' type='l', col='gray', lty = 1, ylab = "response", ylim=c(model$call$lower,model$call$upper))
 #' lines(x,constrSpline(object=model)(x), lty=1,col='black')
 #' points(design, response, pch=19)
+#' legend(0, 48, c("posterior mean and max"), 
+#'        col = c('black'), text.col = "black",
+#'        lty = c(1), pch=c(NA_integer_),lwd = c(2), text.font=1,box.lty=0, cex=0.8)
 #' abline(h=model$call$lower, lty=2)
 #' abline(h=model$call$upper, lty=2)
-
-
 
 
 

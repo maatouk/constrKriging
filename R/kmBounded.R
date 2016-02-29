@@ -1,4 +1,3 @@
-
 #' @title Kriging model with boundedness constraints
 #' @param design 1-column matrix of the design of experiments
 #' @param response a vector containing the output values given by the real function at the design points
@@ -21,7 +20,7 @@ kmBounded1D <- function(design, response,
                         upper = max(response)+(max(response)-min(response))*.1,
                         nugget = 1e-7*sd(response)) {
   
-  if (!is.matrix(design)) design=matrix(design,ncol=1)
+  if (!is.matrix(design)) design=matrix(design, ncol=1)
   
   
   #   if (coef.cov=="LOO") {
@@ -144,7 +143,7 @@ Phi1D.kmBounded1D <- function(model, newdata){
   v[, 1] <- model$phi0(x, N = N)
   v[, N+1] <- model$phiN(x, N = N)
   for(j in 2 : N){
-    v[, j] = model$phii(x, j-1, N)
+    v[, j] = model$phii(x, j-1, N = N)
   }
   
   return(v)
