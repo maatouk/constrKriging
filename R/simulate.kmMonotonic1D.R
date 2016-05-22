@@ -33,10 +33,10 @@
 #' }
 #' design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 #' response <- f(design)
-#' model = kmMonotonic1D(design, response, coef.var=335^2, coef.cov=4.7, basis.size=50)
+#' model = kmMonotonic1D(design, response, coef.var=335^2, coef.cov=4.37, basis.size=50)
 #' x=seq(0, 1,, 100)
 #' graphics::matplot(x, y=simulate_process(object=model, newdata=x, nsim=40), col='gray', type='l',lty=1, ylab='response', xlab='input')
-#' lines(x, constrSpline(model)(x), lty=2, col='black', lwd=1)
+#' lines(x, constrSpline(model)(x), lty=2, col='black', lwd=2)
 #' lines(x, f(x))
 #' points(design, response, pch=19)
 #' legend(0.3, -0.5, c("true function", "posterior max"), 
