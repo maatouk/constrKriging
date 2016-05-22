@@ -63,6 +63,6 @@ Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations o
 
 Bay, X., Grammont, L., and Maatouk, H. (2015). A New Method For Interpolating In A Convex Subset Of A Hilbert Space. Submitted, preprint https://hal.archives-ouvertes.fr/hal-01136466.
 
-Bay. X, Grammont, L. and Maatouk, H. (2016). Generalization of the Kimeldorf-Wahba Correspondence for Constrained Interpolation. Accepted with minor revision in Electronic Journal of Statistics, preprint http://arxiv.org/abs/1602.02714.
+Bay X., Grammont, L. and Maatouk, H. (2016). Generalization of the Kimeldorf-Wahba Correspondence for Constrained Interpolation. Accepted with minor revision in Electronic Journal of Statistics, preprint http://arxiv.org/abs/1602.02714.
 
-A. Cousin, H. Maatouk, and D. Rulli\`ere (2016). Kriging of Financial Term-Structures. European Journal of Operational Research, preprint https://arxiv.org/abs/1604.02237.
+Cousin, A., Maatouk, H. and Rullière, D. (2016). Kriging of Financial Term-Structures. to appear in European Journal of Operational Research, preprint https://arxiv.org/abs/1604.02237.
