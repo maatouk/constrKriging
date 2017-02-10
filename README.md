@@ -58,7 +58,7 @@ lwd = c(2, 2, 10), text.font=1,box.lty=0)
 References
 ---------
 
-Maatouk, H. and Bay, X. (2014). A New Rejection Sampling Method for Truncated Multivariate Gaussian Random Variables Restricted to Convex Sets. In: Nuyens R, Cools R (ed) Monte Carlo and Quasi-Monte Carlo Methods, vol 163. Springer International Publishing, Cham, pp 521–530 Preprint http://hal-emse.ccsd.cnrs.fr/FAYOL-ENSMSE/hal-01063978v1.
+Maatouk, H. and Bay, X. (2014). A New Rejection Sampling Method for Truncated Multivariate Gaussian Random Variables Restricted to Convex Sets. In: Nuyens R, Cools R (ed) Monte Carlo and Quasi-Monte Carlo Methods, vol 163. Springer International Publishing, Cham, pp 521–530, preprint http://hal-emse.ccsd.cnrs.fr/FAYOL-ENSMSE/hal-01063978v1.
 
 Maatouk, H. and Bay, X. (2017). Gaussian Process Emulators for Computer Experiments with Inequality Constraints. Mathematical Geosciences. doi:10.1007/s11004-017-9673-2, preprint https://hal.archives-ouvertes.fr/hal-01096751.
 
