@@ -58,14 +58,14 @@ lwd = c(2, 2, 10), text.font=1,box.lty=0)
 References
 ---------
 
-Maatouk, H. and Bay, X. (2014). A New Rejection Sampling Method for Truncated Multivariate Gaussian Random Variables Restricted to Convex Sets. In: Nuyens R, Cools R (ed) Monte Carlo and Quasi-Monte Carlo Methods, vol 163. Springer International Publishing, Cham, pp 521–530, preprint http://hal-emse.ccsd.cnrs.fr/FAYOL-ENSMSE/hal-01063978v1.
+Maatouk, H. and Bay, X. (2014). A New Rejection Sampling Method for Truncated Multivariate Gaussian Random Variables Restricted to Convex Sets. In: Nuyens R, Cools R (ed) Monte Carlo and Quasi-Monte Carlo Methods, vol 163. Springer International Publishing, Cham, pp 521–530.
 
-Maatouk, H. and Bay, X. (2017). Gaussian Process Emulators for Computer Experiments with Inequality Constraints. Mathematical Geosciences. doi:10.1007/s11004-017-9673-2, preprint https://hal.archives-ouvertes.fr/hal-01096751.
+Maatouk, H. and Bay, X. (2017). Gaussian Process Emulators for Computer Experiments with Inequality Constraints. Mathematical Geosciences. doi:10.1007/s11004-017-9673-2.
 
 Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations of Hyper-Parameters of Gaussian Processes with Inequality Constraints. Procedia Environmental Sciences, 27 :38 – 44, 2015. Spatial Statistics conference 2015.
 
-Bay, X., Grammont, L., and Maatouk, H. (2015). A New Method For Interpolating In A Convex Subset Of A Hilbert Space. Submitted, preprint https://hal.archives-ouvertes.fr/hal-01136466.
+Bay, X., Grammont, L., and Maatouk, H. (2015). A New Method For Interpolating In A Convex Subset Of A Hilbert Space.
 
-Bay X., Grammont, L. and Maatouk, H. (2016). Generalization of the Kimeldorf-Wahba Correspondence for Constrained Interpolation. Electronic Journal of Statistics 10(1):1580–1595, preprint http://arxiv.org/abs/1602.02714.
+Bay X., Grammont, L. and Maatouk, H. (2016). Generalization of the Kimeldorf-Wahba Correspondence for Constrained Interpolation. Electronic Journal of Statistics 10(1):1580–1595.
 
-Cousin, A., Maatouk, H. and Rullière, D. (2016). Kriging of Financial Term-Structures. European Journal of Operational Research 255(2):631–648, preprint https://arxiv.org/abs/1604.02237.
+Cousin, A., Maatouk, H. and Rullière, D. (2016). Kriging of Financial Term-Structures. European Journal of Operational Research 255(2):631–648.
