@@ -64,8 +64,8 @@ Maatouk, H. and Bay, X. (2017). Gaussian Process Emulators for Computer Experime
 
 Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations of Hyper-Parameters of Gaussian Processes with Inequality Constraints. Procedia Environmental Sciences, 27 :38 – 44, 2015. Spatial Statistics conference 2015.
 
-Bay, X., Grammont, L., and Maatouk, H. (2015). A New Method For Interpolating In A Convex Subset Of A Hilbert Space. In revision, preprint https://hal.archives-ouvertes.fr/hal-01136466.
+Bay, X., Grammont, L., and Maatouk, H. (2015). A New Method For Interpolating In A Convex Subset Of A Hilbert Space. Submitted, preprint https://hal.archives-ouvertes.fr/hal-01136466.
 
-Bay X., Grammont, L. and Maatouk, H. (2016). Generalization of the Kimeldorf-Wahba Correspondence for Constrained Interpolation. Electron J Stat 10(1):1580–1595, preprint http://arxiv.org/abs/1602.02714.
+Bay X., Grammont, L. and Maatouk, H. (2016). Generalization of the Kimeldorf-Wahba Correspondence for Constrained Interpolation. Electronic Journal of Statistics 10(1):1580–1595, preprint http://arxiv.org/abs/1602.02714.
 
 Cousin, A., Maatouk, H. and Rullière, D. (2016). Kriging of Financial Term-Structures. European Journal of Operational Research 255(2):631–648, preprint https://arxiv.org/abs/1604.02237.
