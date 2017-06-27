@@ -58,7 +58,7 @@ lwd = c(2, 2, 10), text.font=1,box.lty=0)
 References
 ---------
 
-Maatouk, H. and Bay, X. (2017). Gaussian Process Emulators for Computer Experiments with Inequality Constraints. Mathematical Geosciences. Doi:10.1007/s11004-017-9673-2
+Maatouk, H. and Bay, X. (2017). Gaussian Process Emulators for Computer Experiments with Inequality Constraints. Mathematical Geosciences 49(5):557–582
 
 Cousin, A., Maatouk, H. and Rullière, D. (2016). Kriging of Financial Term-Structures. European Journal of Operational Research 255(2):631–648
 
@@ -66,6 +66,6 @@ Bay X., Grammont, L. and Maatouk, H. (2016). Generalization of the Kimeldorf-Wah
 
 Maatouk, H. and Bay, X. (2014). A New Rejection Sampling Method for Truncated Multivariate Gaussian Random Variables Restricted to Convex Sets. In: Nuyens R, Cools R (ed) Monte Carlo and Quasi-Monte Carlo Methods, vol 163. Springer International Publishing, Cham, pp 521–530
 
-Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations of Hyper-Parameters of Gaussian Processes with Inequality Constraints. Procedia Environmental Sciences, 27 :38 – 44, 2015. Spatial Statistics conference 2015
+Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations of Hyper-Parameters of Gaussian Processes with Inequality Constraints. Procedia Environmental Sciences, 27:38–44, 2015. Spatial Statistics conference 2015
 
 Bay, X., Grammont, L., and Maatouk, H. (2017). A New Method For Interpolating In A Convex Subset Of A Hilbert Space. Computational Optimization and Applications. Doi: 10.1007/s10589-017-9906-9 
