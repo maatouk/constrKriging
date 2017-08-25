@@ -68,4 +68,4 @@ Maatouk, H. and Bay, X. (2014). A New Rejection Sampling Method for Truncated Mu
 
 Maatouk, H., Roustant, O., and Richet, Y. (2015). Cross-Validation Estimations of Hyper-Parameters of Gaussian Processes with Inequality Constraints. Procedia Environmental Sciences, 27:38–44, 2015. Spatial Statistics conference 2015
 
-Bay, X., Grammont, L., and Maatouk, H. (2017). A New Method For Interpolating In A Convex Subset Of A Hilbert Space. Computational Optimization and Applications. Doi: 10.1007/s10589-017-9906-9 
+Bay, X., Grammont, L., and Maatouk, H. (2017). A New Method For Interpolating In A Convex Subset Of A Hilbert Space. Computational Optimization and Applications 68(1):95-120 
