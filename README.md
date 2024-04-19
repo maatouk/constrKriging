@@ -24,15 +24,15 @@ Usage
 ```{r}
 ## Golchi Example
 f <- function(x){
-log(20*x+1)
+log(20 * x + 1)
 }
 
 design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
 response <- f(design)
 
 meany <- mean(response)
-f <- function(x){
-log(20*x+1)-meany
+f <- function(x) {
+log(20 * x + 1) - meany
 }
 
 design <- c(0, 0.1, 0.2, 0.3, 0.4, 0.9, 1)
@@ -42,14 +42,14 @@ model = kmMonotonic1D(design, response, covtype="matern5_2", basis.size=50, coef
 
 plot(f, ylab='response', xlab='design')
 
-plot(object=model, spline=TRUE, quantiles=TRUE, col='gray',nsim=1000, add=T)
+plot(object=model, spline=TRUE, quantiles=TRUE, col='gray', nsim=1000, add=T)
 
-points(design,response,pch=19)
+points(design, response, pch=19)
 
-legend(0.2,-0.5, c("true function","posterior max","constrained 95% intervals"),
-col = c('black','gray','gray'), text.col = "black",
+legend(0.2,-0.5, c("true function", "posterior max", "constrained 95% intervals"),
+col = c('black', 'gray', 'gray'), text.col = "black",
 lty = c(1, 1, 1), pch=c(NA_integer_, NA_integer_),
-lwd = c(2, 2, 10), text.font=1,box.lty=0)
+lwd = c(2, 2, 10), text.font=1, box.lty=0)
 ```
 
 ![](Rplot.png)
